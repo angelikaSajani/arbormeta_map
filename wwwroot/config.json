@@ -37,15 +37,19 @@
             link: "http://www.example.com"
         },*/
     // This is used in various text messages. You should also set <title> in index.html
-    "appName": "Terria Map",
+    "appName": "ArborMeta",
+    "cesiumIonAccessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJjYmUyMmIxZC01MDAwLTRiZTMtOWQwZC1kNzRlN2M5MzI5OGUiLCJpZCI6MTcwMzg1LCJpYXQiOjE2OTY2NDM2ODN9.0_Lcp4EW5yn-15Afy11sjTAoE5wt6wfJl4gSSpeqN7Y",
+    "bingMapsKey": "Aqpna-6uSGUMG9yH9pG2am5nxzTi25q_xyfasu88h6qwf6f_K94c1fkrcHu6tf8T",
+    "hideTerriaLogo": true,
     // See comments in lib/Views/global.scss for further information about customising colors, logos, fonts etc.
     "brandBarElements": [
       "",
-      "<a target=\"_blank\" href=\"https://terria.io\"><img src=\"images/terria_logo.png\" height=\"52\" title=\"Version: {{version}}\" /></a>",
+      "<a target=\"_blank\" href=\"https://arbormeta.au\"><img src=\"images/ARBOR_LARGE_GREEN.png\" height=\"252\" title=\"Version: {{version}}\" /></a>",
+      //   "<a target=\"_blank\" href=\"https://terria.io\"><img src=\"images/terria_logo.png\" height=\"52\" title=\"Version: {{version}}\" /></a>",
       ""
     ],
     // Shown when things go wrong.
-    "supportEmail": "help@example.com",
+    "supportEmail": "info@arbormeta.au.com",
     // You probably shouldn't change this.
     "proj4ServiceBaseUrl": "proj4def/",
     // Or this
