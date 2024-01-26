@@ -72,6 +72,9 @@
     // True to display in-app guides.
     // "showInAppGuides": false,
     // see `languageOverrides.json` in languages/en
+    "treesApp": {
+      "apiUrl": "https://arbormeta.earth/api/v1/"
+    },
     "languageConfiguration": {
       "enabled": false,
       "debug": false,
