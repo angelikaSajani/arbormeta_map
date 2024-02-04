@@ -22,10 +22,7 @@ privateserverconfig.json
 wwwroot/privateconfig.json
 deploy/packages/
 deploy/work/
-packages/terriajs/.github/*
-packages/terriajs/.vscode/*
-packages/terriajs/.architecture/*
-packages/terriajs/node_modules/*
+packages/
 
 pancake/
 yarn-error.log
