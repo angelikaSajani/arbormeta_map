@@ -43,17 +43,16 @@
     "hideTerriaLogo": true,
     // See comments in lib/Views/global.scss for further information about customising colors, logos, fonts etc.
     "brandBarElements": [
-      "",
-      "<a target=\"_blank\" href=\"https://arbormeta.au\"><img src=\"images/ARBOR_LARGE_GREEN.png\" height=\"252\" title=\"Version: {{version}}\" /></a>",
-      //   "<a target=\"_blank\" href=\"https://terria.io\"><img src=\"images/terria_logo.png\" height=\"52\" title=\"Version: {{version}}\" /></a>",
-      ""
+      "<a target=\"_blank\" href=\"https://arbormeta.au\"><img src=\"images/ARBOR_LARGE_GREEN.png\" tabindex=\"-1\" height=\"252\" title=\"ArborMeta Home\" /></a>",
+      "<a target=\"_blank\" href=\"https://arbormeta.earth/dashboard/\"><img src=\"images/database_rounded.png\" tabindex=\"-1\" height=\"252\" title=\"ArborMeta Database App\" /></a>"
     ],
     // Shown when things go wrong.
     "supportEmail": "info@arbormeta.au.com",
     // You probably shouldn't change this.
     "proj4ServiceBaseUrl": "proj4def/",
     // Or this
-    "feedbackUrl": "feedback",
+    "feedbackUrl": "http://localhost:8043/api/v1/terria/feedback_new/",
+    "feedbackMinLength": 3,
     // Default mobile viewer mode when loading the map for the first time on mobile platforms.
     // Options are: "3DTerrain", "3DSmooth", "2D"
     "mobileDefaultViewerMode": "2d",

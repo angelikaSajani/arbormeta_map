@@ -3,7 +3,12 @@
 
 name: CI
 
-on: [push, pull_request]
+on:
+  # run it on push to the default repository branch
+  push:
+    branches: [arbormeta]
+  # run it during pull request
+  pull_request:
 
 jobs:
   build:
@@ -11,7 +16,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [16.x, 18.x, 20.x]
+        node-version: [20.x]
 
     steps:
       - uses: actions/checkout@v2
