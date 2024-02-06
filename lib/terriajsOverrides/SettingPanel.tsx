@@ -33,7 +33,7 @@ import Spacing from "terriajs/lib/Styled/Spacing";
 import Text, { TextSpan } from "terriajs/lib/Styled/Text";
 import withTerriaRef from "terriajs/lib/ReactViews/HOCs/withTerriaRef";
 import MenuPanel from "terriajs/lib/ReactViews/StandardUserInterface/customizable/MenuPanel";
-import Styles from "./setting-panel.scss";
+import Styles from "terriajs/lib/ReactViews/Map/Panels/setting-panel.scss";
 
 const sides = {
   left: "settingPanel.terrain.left",

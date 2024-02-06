@@ -1,3 +1,9 @@
+// ================================================================================================================================================
+// Overridden to
+// - (condictionally) include LoginPanel and LogoutPanel
+// - include fixed version of SettingsPanel (small bugfix, we may be able to revert this once its fixed in the original)
+// ================================================================================================================================================
+
 import classNames from "classnames";
 import { runInAction } from "mobx";
 import { observer } from "mobx-react";
@@ -13,11 +19,11 @@ import ToolsPanel from "terriajs/lib/ReactViews/Map/Panels/ToolsPanel/ToolsPanel
 import StoryButton from "terriajs/lib/ReactViews/Map/MenuBar/StoryButton/StoryButton";
 import HelpButton from "terriajs/lib/ReactViews/Map/MenuBar/HelpButton/HelpButton";
 
-import SettingPanel from "./../terriajsOverrides/SettingPanel/SettingPanel";
-import LoginPanel from "../../Additions//LoginPanel/LoginPanel";
-import LogoutPanel from "../../Additions/LogoutPanel/LogoutPanel";
+import SettingPanel from "./SettingPanel"; // AIS: use our own overrides  < ==================================
+import LoginPanel from "../Additions//LoginPanel/LoginPanel";
+import LogoutPanel from "../Additions/LogoutPanel/LogoutPanel";
 
-import Styles from "./menu-bar.scss";
+import Styles from "terriajs/lib/ReactViews/Map/MenuBar/menu-bar.scss";
 
 const StyledMenuBar = styled.div`
   pointer-events: none;
@@ -106,7 +112,7 @@ const MenuBar = observer((props) => {
             />
           </li>
         </ul>
-        {viewState.terria.configParameters.treesAppUrl && (
+        {viewState.treesAppUrl && (
           <ul className={classNames(Styles.menu)}>
             <li className={Styles.menuItem}>
               {viewState.loginData ? (

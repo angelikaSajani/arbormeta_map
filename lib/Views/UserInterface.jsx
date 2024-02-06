@@ -1,3 +1,9 @@
+// ==================================================================================================
+// Modified to
+// - use our override of StandardUserInterface
+// - the href of the About button, atm hardcoded
+// ==================================================================================================
+
 import PropTypes from "prop-types";
 import React from "react";
 import RelatedMaps from "terriajs/lib/ReactViews/RelatedMaps/RelatedMaps";
@@ -6,7 +12,7 @@ import {
   MenuLeft
 } from "terriajs/lib/ReactViews/StandardUserInterface/customizable/Groups";
 import MenuItem from "terriajs/lib/ReactViews/StandardUserInterface/customizable/MenuItem";
-import StandardUserInterface from "terriajs/lib/ReactViews/StandardUserInterface/StandardUserInterface";
+import StandardUserInterface from "../terriajsOverrides/StandardUserInterface"; // AIS: Use our own override     < =======================================
 import version from "../../version";
 import "./global.scss";
 
@@ -27,8 +33,8 @@ import "./global.scss";
 
 export default function UserInterface(props) {
   const relatedMaps = props.viewState.terria.configParameters.relatedMaps;
-  const aboutButtonHrefUrl =
-    props.viewState.terria.configParameters.aboutButtonHrefUrl;
+  const aboutButtonHrefUrl = "https://www.arbormeta.au/about"; // AIS: TBC: make that configurable, environment variable -> ViewState_Arbm
+  //    props.viewState.terria.configParameters.aboutButtonHrefUrl; // AIS: this configParameter is hardcoded to 'about.html' in Terria.ts. Don't want to override that
 
   return (
     <StandardUserInterface {...props} version={version}>
