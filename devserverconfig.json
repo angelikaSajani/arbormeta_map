@@ -1,6 +1,13 @@
 {
   "port": 3001,
 
+  "https": {
+    // Name and location of keys. You can make self-signed certs for testing like:
+    // openssl req -nodes -new -x509 -keyout key.pem -out cert.pem
+    "key": "/var/lib/treesapp/certs/private.key",
+    "cert": "/var/lib/treesapp/certs/certificate.crt"
+  },
+
   "allowProxyFor": [
     "nicta.com.au",
     "gov.au",

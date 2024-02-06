@@ -1,0 +1,840 @@
+{
+  // "workbench": [],
+  "previewedItemId": [],
+  "workbench": [
+    "Mau_bound",
+    "dungmau_als",
+    "mau_rgb",
+    "mau_cc",
+    "mau_ca",
+    "mau_ca18"
+  ],
+  // "showSplitter": true,
+  // "splitPosition": 0.5,
+  "catalog": [
+    {
+      "id": "Arbormeta Data",
+      "type": "group",
+      "name": "Arbormeta Datasets",
+      // "description": "Arbormeta Datasets.",
+      "sortMembersBy": "id",
+      "isOpenInWorkbench": true,
+      "isOpen": true,
+      "members": [
+        {
+          "id": "Brindingabba",
+          "type": "group",
+          "name": "Brindingabba",
+          "sortMembersBy": "id",
+          "isOpenInWorkbench": true,
+          "members": [
+            {
+              "type": "kml",
+              "name": "Brindingabba Boundary",
+              "url": "tjs/Brindigabba.kml",
+              "isOpenInWorkbench": false
+            },
+            {
+              "id": "brin_tls_p",
+              "type": "geojson",
+              "name": "Brindingabba TLS Sites",
+              "url": "tjs/Brin_TLS_poly.geojson",
+              "opacity": 0.6,
+              "styles": [
+                {
+                  "id": "fid",
+                  "color": {
+                    "nullColor": "rgba(5,225,244,1)"
+                  },
+                  "hidden": false
+                }
+              ],
+              "activeStyle": "fid",
+              "showDisableStyleOption": false,
+              "isOpenInWorkbench": false
+            },
+            {
+              "id": "brind_als",
+              "type": "open-street-map",
+              // "type":"url-template",
+              "name": "Brindingabba Cover Measured",
+              "description": "Cover Measured, >2m 0-30%",
+              "url": "http://172.24.0.2:5000/singleband/brindclip/B1?colormap=ylgn&stretch_range=[0,0.3]",
+              "show": true,
+              // "isShown": true,
+              "opacity": 1
+            },
+            {
+              "id": "brind_cc",
+              "type": "open-street-map",
+              // "type":"url-template",
+              "name": "Brindingabba Cover Prediction",
+              "description": "Cover Prediction, >2m 0-30%",
+              "url": "http://172.24.0.2:5000/singleband/brind/B1?colormap=ylgn&stretch_range=[0,0.3]",
+              "show": true
+              // "isShown": true,
+              // "opacity": 1
+            },
+            {
+              "id": "brind_ca",
+              "type": "geojson",
+              "name": "Brindingabba 10ha grid 200cm",
+              "url": "tjs/brindingabba_200cm_cover_prediction_10ha_cea_Grid.geojson",
+              "opacity": 0.77,
+              "styles": [
+                {
+                  "id": "_e80mape10_mean",
+                  "title": "3 class 10 Ha canopy cover %",
+                  "color": {
+                    "mapType": "bin",
+                    "minimumValue": 0.001,
+                    "numberOfBins": 3,
+                    "binMaximums": [0.0999, 0.1999, 0.6],
+                    "binColors": [
+                      "rgba(249,36,5,1)",
+                      "rgba(173,234,91,1)",
+                      "rgba(79,190,25,1)"
+                    ],
+                    "legend": {
+                      "title": "0-10% red 10-20% lime 20%+ green"
+                    }
+                  },
+                  "hidden": false
+                }
+              ],
+              "activeStyle": "_e80mape10_mean",
+              "showDisableStyleOption": false
+            },
+            {
+              "id": "brind_ca18",
+              "type": "geojson",
+              "name": "Brindingabba 10ha grid 180cm",
+              "url": "tjs/brind_zonalstats_180cm_2.geojson",
+              "opacity": 0.77,
+              "styles": [
+                {
+                  "id": "_180cm_mean",
+                  "title": "3 class 10 Ha canopy cover %",
+                  "color": {
+                    "mapType": "bin",
+                    "minimumValue": 0.001,
+                    "numberOfBins": 3,
+                    "binMaximums": [0.0999, 0.1999, 0.6],
+                    "binColors": [
+                      "rgba(249,36,5,1)",
+                      "rgba(173,234,91,1)",
+                      "rgba(79,190,25,1)"
+                    ],
+                    "legend": {
+                      "title": "0-10% red 10-20% lime 20%+ green"
+                    }
+                  },
+                  "hidden": false
+                }
+              ],
+              "activeStyle": "_180cm_mean",
+              "showDisableStyleOption": false
+            }
+          ]
+        },
+        {
+          "id": "MaureenJoy",
+          "type": "group",
+          "name": "MaureenJoy",
+          "sortMembersBy": "id",
+          "isOpenInWorkbench": true,
+          "members": [
+            {
+              "id": "Mau_bound",
+              "type": "kml",
+              "name": "MaureenJoy Station Boundary",
+              "url": "tjs/MaureenJoy Station.kml",
+              "isOpenInWorkbench": false
+            },
+            {
+              "id": "Canopy Map TLS",
+              "type": "open-street-map",
+              // "type":"url-template",
+              "name": "MaureenJoy Canopy Map TLS",
+              "description": "Canopy, >2m TLS",
+              "url": "http://172.24.0.2:5000/singleband/mau7tls1/B1?colormap=ocean&stretch_range=[0,1.2]",
+              "show": true
+              // "isShown": true,
+              // "opacity": 1
+            },
+            {
+              "id": "mau_max",
+              "type": "open-street-map",
+              // "type":"url-template",
+              "name": "MaureenJoy Station Imagery Grey Scale",
+              "description": "Maxar 0.5m Imagery 29/09/2023",
+              "url": "http://172.24.0.2:5000/singleband/mau/B1?colormap=gray&stretch_range=[130,600]",
+              "show": true,
+              "isOpenInWorkbench": false,
+              // "isShown": true,
+              "opacity": 1
+            },
+            {
+              "id": "mau_rgb",
+              "type": "open-street-map",
+              // "type":"url-template",
+              "name": "MaureenJoy Station Imagery RGB",
+              "description": "Maxar 0.5m Imagery 29/09/2023",
+              "url": "http://172.24.0.2:5000/rgb/maurgb?r=B1&r_range=[0,255]&g=B2&g_range=[0,255]&b=B3&b_range=[0,255]",
+              "show": true,
+              "isOpenInWorkbench": false,
+              // "isShown": true,
+              "opacity": 1
+            },
+            {
+              "id": "dungmau_als",
+              "type": "open-street-map",
+              // "type":"url-template",
+              "name": "Dungarvan MaureenJoy Cover Measured",
+              "description": "Cover Measured, >2m 0-30%",
+              "url": "http://172.24.0.2:5000/singleband/dungclip/B1?colormap=ylgn&stretch_range=[0,0.3]",
+              "show": true,
+              "isOpenInWorkbench": false,
+              // "isShown": true,
+              "opacity": 1
+            },
+            {
+              "id": "mau_cc",
+              "type": "open-street-map",
+              // "type":"url-template",
+              "name": "MaureenJoy Station Cover Prediction",
+              "description": "Cover Prediction, >2m 0-30%",
+              "url": "http://172.24.0.2:5000/singleband/maureen/B1?colormap=ylgn&stretch_range=[0,0.3]",
+              "show": true
+              // "isShown": true,
+              // "opacity": 1
+            },
+            {
+              "id": "mau_ca",
+              "type": "geojson",
+              "name": "MaureenJoy 10ha grid 200cm",
+              "url": "tjs/maureenjoy_200cm_cover_prediction_10ha_cea_Grid.geojson",
+              "opacity": 0.77,
+              "styles": [
+                {
+                  "id": "_e80mape10_mean",
+                  "title": "3 class 10 Ha canopy cover %",
+                  "color": {
+                    "mapType": "bin",
+                    "minimumValue": 0.001,
+                    "numberOfBins": 3,
+                    "binMaximums": [0.0999, 0.1999, 0.6],
+                    "binColors": [
+                      "rgba(249,36,5,1)",
+                      "rgba(173,234,91,1)",
+                      "rgba(79,190,25,1)"
+                    ],
+                    "legend": {
+                      "title": "0-10% red 10-20% lime 20%+ green"
+                    }
+                  },
+                  "hidden": false
+                }
+              ],
+              "activeStyle": "_e80mape10_mean",
+              "showDisableStyleOption": false
+            },
+            {
+              "id": "mau_ca18",
+              // "isEnabled": false,
+              "type": "geojson",
+              "name": "MaureenJoy 10ha grid  180cm",
+              "url": "tjs/maur_zonalstats_180cm.geojson",
+              "opacity": 0.77,
+              "styles": [
+                {
+                  "id": "_180cm_mean",
+                  "title": "3 class 10 Ha canopy cover %",
+                  "color": {
+                    "mapType": "bin",
+                    "minimumValue": 0.001,
+                    "numberOfBins": 3,
+                    "binMaximums": [0.0999, 0.1999, 0.6],
+                    "binColors": [
+                      "rgba(249,36,5,1)",
+                      "rgba(173,234,91,1)",
+                      "rgba(79,190,25,1)"
+                    ],
+                    "legend": {
+                      "title": "0-10% red 10-20% lime 20%+ green"
+                    }
+                  },
+                  "hidden": false
+                }
+              ],
+              "activeStyle": "_180cm_mean",
+              "showDisableStyleOption": false
+            }
+          ]
+        },
+        {
+          "id": "Dungarvan",
+          "type": "group",
+          "name": "Dungarvan",
+          "sortMembersBy": "id",
+          "isOpenInWorkbench": true,
+          "members": [
+            {
+              "type": "kml",
+              "name": "Dungarvan Boundary",
+              "url": "tjs/Dungarvan.kml",
+              "isOpenInWorkbench": false
+            },
+            {
+              "id": "dung_tls",
+              "type": "geojson",
+              "name": "Dungarvan TLS Sites",
+              "url": "tjs/Dung_TLS_poly.geojson",
+              "opacity": 0.6,
+              "styles": [
+                {
+                  "id": "fid",
+                  "color": {
+                    "nullColor": "rgba(5,225,244,1)"
+                  },
+                  "hidden": false
+                }
+              ],
+              "activeStyle": "fid",
+              "showDisableStyleOption": false,
+              "isOpenInWorkbench": false
+            },
+            {
+              "id": "dungmau_als",
+              "type": "open-street-map",
+              // "type":"url-template",
+              "name": "Dungarvan MaureenJoy Cover Measured",
+              "description": "Cover Measured, >2m 0-30%",
+              "url": "http://172.24.0.2:5000/singleband/dungclip/B1?colormap=ylgn&stretch_range=[0,0.3]",
+              "show": true,
+              // "isShown": true,
+              "opacity": 1
+            },
+            {
+              "id": "dung_cc",
+              "type": "open-street-map",
+              // "type":"url-template",
+              "name": "Dungarvan Cover Prediction",
+              "description": "Cover Prediction, >2m 0-30%",
+              "url": "http://172.24.0.2:5000/singleband/dungarven/B1?colormap=ylgn&stretch_range=[0,0.3]",
+              "show": true
+              // "isShown": true,
+              // "opacity": 1
+            },
+            {
+              "id": "dung_ca",
+              "type": "geojson",
+              "name": "Dungarvan 10ha grid 200cm",
+              "url": "tjs/dungarven_200cm_cover_prediction_10ha_cea_Grid.geojson",
+              "opacity": 0.77,
+              "styles": [
+                {
+                  "id": "_e80mape10_mean",
+                  "title": "3 class 10 Ha canopy cover %",
+                  "color": {
+                    "mapType": "bin",
+                    "minimumValue": 0.001,
+                    "numberOfBins": 3,
+                    "binMaximums": [0.0999, 0.1999, 0.6],
+                    "binColors": [
+                      "rgba(249,36,5,1)",
+                      "rgba(173,234,91,1)",
+                      "rgba(79,190,25,1)"
+                    ],
+                    "legend": {
+                      "title": "0-10% red 10-20% lime 20%+ green"
+                    }
+                  },
+                  "hidden": false
+                }
+              ],
+              "activeStyle": "_e80mape10_mean",
+              "showDisableStyleOption": false
+            },
+            {
+              "id": "dung_ca18",
+              "type": "geojson",
+              "name": "Dungarvan 10ha grid 180cm",
+              "url": "tjs/dung_zonalstats_180cm.geojson",
+              "opacity": 0.77,
+              "styles": [
+                {
+                  "id": "_180cm_mean",
+                  "title": "3 class 10 Ha canopy cover %",
+                  "color": {
+                    "mapType": "bin",
+                    "minimumValue": 0.001,
+                    "numberOfBins": 3,
+                    "binMaximums": [0.0999, 0.1999, 0.6],
+                    "binColors": [
+                      "rgba(249,36,5,1)",
+                      "rgba(173,234,91,1)",
+                      "rgba(79,190,25,1)"
+                    ],
+                    "legend": {
+                      "title": "0-10% red 10-20% lime 20%+ green"
+                    }
+                  },
+                  "hidden": false
+                }
+              ],
+              "activeStyle": "_180cm_mean",
+              "showDisableStyleOption": false
+            }
+          ]
+        },
+        {
+          "id": "6_NFSWVD 21",
+          "type": "group",
+          "name": "NFSWVD 21",
+          "sortMembersBy": "name",
+          "isOpenInWorkbench": true,
+          "members": [
+            {
+              "id": "brind_nfs",
+              "type": "geojson",
+              "name": "Brindingabba NFSWVD 21",
+              "url": "tjs/Brindigabba_Woody21_Polygon.geojson",
+              "columns": [
+                {
+                  "name": "Woody Cover (NFSWV)",
+                  "type": "enum"
+                }
+              ],
+              "styles": [
+                {
+                  "id": "Woody Cover (NFSWV)",
+                  "color": {
+                    "binColors": [],
+                    "enumColors": [
+                      {
+                        "value": "Sparse woody vegetation",
+                        "color": "rgba(202,235,188,1)"
+                      },
+                      {
+                        "value": "Woody vegetation (forest)",
+                        "color": "rgba(22,125,5,1)"
+                      },
+                      {
+                        "value": "Non-woody",
+                        "color": "rgba(248,205,94,1)"
+                      }
+                    ],
+                    "colorPalette": "Category10"
+                  },
+                  "hidden": false
+                }
+              ],
+              "showDisableStyleOption": false
+            },
+            {
+              "id": "mau_nfs",
+              "type": "geojson",
+              "name": "MaureenJoy Station NFSWVD 21",
+              "url": "tjs/MaureenJoyStation_Woody21_Polygon.geojson",
+              "columns": [
+                {
+                  "name": "Woody Cover (NFSWV)",
+                  "type": "enum"
+                }
+              ],
+              "styles": [
+                {
+                  "id": "Woody Cover (NFSWV)",
+                  "color": {
+                    "binColors": [],
+                    "enumColors": [
+                      {
+                        "value": "Sparse woody vegetation",
+                        "color": "rgba(202,235,188,1)"
+                      },
+                      {
+                        "value": "Woody vegetation (forest)",
+                        "color": "rgba(22,125,5,1)"
+                      },
+                      {
+                        "value": "Non-woody",
+                        "color": "rgba(248,205,94,1)"
+                      }
+                    ],
+                    "colorPalette": "Category10"
+                  },
+                  "hidden": false
+                }
+              ],
+              "showDisableStyleOption": false
+            },
+            {
+              "id": "dung_nfs",
+              "type": "geojson",
+              "name": "Dungarvan NFSWVD 21",
+              "url": "tjs/Dungarvan_Woody21_Polygon.geojson",
+              "columns": [
+                {
+                  "name": "Woody Cover (NFSWV)",
+                  "type": "enum"
+                }
+              ],
+              "styles": [
+                {
+                  "id": "Woody Cover (NFSWV)",
+                  "color": {
+                    "binColors": [],
+                    "enumColors": [
+                      {
+                        "value": "Sparse woody vegetation",
+                        "color": "rgba(202,235,188,1)"
+                      },
+                      {
+                        "value": "Woody vegetation (forest)",
+                        "color": "rgba(22,125,5,1)"
+                      },
+                      {
+                        "value": "Non-woody",
+                        "color": "rgba(248,205,94,1)"
+                      }
+                    ],
+                    "colorPalette": "Category10"
+                  },
+                  "hidden": false
+                }
+              ],
+              "showDisableStyleOption": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "Root Group/National Data Sets",
+      "type": "group",
+      "name": "National Datasets",
+      "description": "National Datasets catalogue group is a collection of information from different Australian government or research organisations. The datasets represent information at a local, state and national level depending on the type of data custodian. You can find more details about each dataset coverage, custodian, license and update timeline in the \"About data\" section.",
+      "sortMembersBy": "name",
+      "members": [
+        {
+          "id": "cEynH3ca",
+          "name": "Agriculture",
+          "path": ["cEynH3ca"],
+          "type": "terria-reference",
+          "isGroup": true,
+          "url": "https://terria-catalogs-public.storage.googleapis.com/nationalmap/catalog/agriculture/prod.json",
+          "shareKeys": ["Root Group/National Datasets/Agriculture"]
+        },
+        {
+          "id": "BCN2Lkpj",
+          "name": "Boundaries",
+          "path": ["BCN2Lkpj"],
+          "type": "terria-reference",
+          "isGroup": true,
+          "url": "https://terria-catalogs-public.storage.googleapis.com/nationalmap/catalog/boundaries/prod.json",
+          "shareKeys": ["Root Group/National Datasets/National Boundaries"]
+        },
+        {
+          "id": "f24f9d4b-f2c3-4d2f-a92f-3280baa02fc1",
+          "name": "Climate",
+          "path": ["f24f9d4b-f2c3-4d2f-a92f-3280baa02fc1"],
+          "type": "terria-reference",
+          "isGroup": true,
+          "url": "https://terria-catalogs-public.storage.googleapis.com/nationalmap/catalog/climate/prod.json"
+        },
+        {
+          "id": "nKHbDUaI",
+          "path": ["nKHbDUaI"],
+          "type": "terria-reference",
+          "isGroup": true,
+          "url": "https://terria-catalogs-public.storage.googleapis.com/nationalmap/catalog/communications/prod.json",
+          "name": "Communications",
+          "shareKeys": ["Root Group/National Datasets/Communications"]
+        },
+        {
+          "id": "QKwzS8N8",
+          "path": ["QKwzS8N8"],
+          "type": "terria-reference",
+          "isGroup": true,
+          "url": "https://terria-catalogs-public.storage.googleapis.com/nationalmap/catalog/elevation/prod.json",
+          "name": "Elevation",
+          "shareKeys": ["Root Group/National Datasets/Elevation"]
+        },
+        {
+          "name": "Energy",
+          "id": "natmap-energy",
+          "description": "The **Electricity Infrastructure**, **Renewable Energy** and **Research** data groups seen in this Energy section of the catalogue have been migrated from the former **Australian Renewable Energy Mapping Infrastructure (AREMI)** site to its new home here on National Map Beta platform. Should  you encounter discrepancies with the former AREMI functionality or content, please send us feedback at [info@terria.io](mailto:info@terria.io). The migration will be finalised once all the issues have been addressed.",
+          "path": ["natmap-energy"],
+          "type": "terria-reference",
+          "isGroup": true,
+          "url": "https://terria-catalogs-public.storage.googleapis.com/nationalmap/catalog/energy/prod.json",
+          "shareKeys": ["Root Group/National Data Sets/Energy"]
+        },
+        {
+          "id": "cZ1FnXgI",
+          "name": "Environment",
+          "path": ["cZ1FnXgI"],
+          "type": "terria-reference",
+          "isGroup": true,
+          "url": "https://terria-catalogs-public.storage.googleapis.com/nationalmap/catalog/environment/prod.json",
+          "shareKeys": ["Root Group/National Datasets/Environment"]
+        },
+        {
+          "id": "KfTLZijL",
+          "path": ["KfTLZijL"],
+          "type": "terria-reference",
+          "isGroup": true,
+          "url": "https://terria-catalogs-public.storage.googleapis.com/nationalmap/catalog/habitation/prod.json",
+          "name": "Habitation",
+          "shareKeys": ["Root Group/National Datasets/Habitation"]
+        },
+        {
+          "id": "nQy48tMJ",
+          "path": ["nQy48tMJ"],
+          "type": "terria-reference",
+          "isGroup": true,
+          "url": "https://terria-catalogs-public.storage.googleapis.com/nationalmap/catalog/health/prod.json",
+          "name": "Health",
+          "shareKeys": ["Root Group/National Datasets/Health"]
+        },
+        {
+          "id": "LtQxrhEf",
+          "path": ["LtQxrhEf"],
+          "type": "terria-reference",
+          "isGroup": true,
+          "url": "https://terria-catalogs-public.storage.googleapis.com/nationalmap/catalog/infrastructure/prod.json",
+          "name": "Infrastructure",
+          "shareKeys": ["Root Group/National Datasets/Infrastructure"]
+        },
+        {
+          "id": "ANfTXBNT",
+          "path": ["ANfTXBNT"],
+          "type": "terria-reference",
+          "isGroup": true,
+          "url": "https://terria-catalogs-public.storage.googleapis.com/nationalmap/catalog/land-cover-land-use/prod.json",
+          "name": "Land Cover and Land Use",
+          "shareKeys": ["Root Group/National Datasets/Land Cover and Land Use"]
+        },
+        {
+          "id": "KrauUHsH",
+          "path": ["KrauUHsH"],
+          "type": "terria-reference",
+          "isGroup": true,
+          "url": "https://terria-catalogs-public.storage.googleapis.com/nationalmap/catalog/marine-oceans/prod.json",
+          "name": "Marine and Oceans",
+          "shareKeys": ["Root Group/National Datasets/Marine and Oceans"]
+        },
+        {
+          "id": "AZJZTz",
+          "name": "Processes",
+          "path": ["AZJZTz"],
+          "type": "terria-reference",
+          "isGroup": true,
+          "url": "https://terria-catalogs-public.storage.googleapis.com/nationalmap/catalog/processes/prod.json"
+        },
+        {
+          "path": ["df11d3d1-0e32-4fb5-982f-bdb725406e44"],
+          "type": "terria-reference",
+          "isGroup": true,
+          "url": "https://terria-catalogs-public.storage.googleapis.com/nationalmap/catalog/resources/prod.json",
+          "name": "Resources",
+          "id": "df11d3d1-0e32-4fb5-982f-bdb725406e44",
+          "shareKeys": ["Root Group/National Datasets/Resources"]
+        },
+        {
+          "id": "6ATFM7CB",
+          "type": "terria-reference",
+          "url": "https://raw.githubusercontent.com/GeoscienceAustralia/dea-config/master/prod/terria/dea-maps-v8.json",
+          "name": "Satellite Images",
+          "isGroup": true,
+          "cacheDuration": "1h"
+        },
+        {
+          "id": "ZntTIvdp",
+          "path": ["ZntTIvdp"],
+          "type": "terria-reference",
+          "isGroup": true,
+          "url": "https://terria-catalogs-public.storage.googleapis.com/nationalmap/catalog/social-economic/prod.json",
+          "name": "Social and Economic",
+          "shareKeys": ["Root Group/National Datasets/Social and Economic"]
+        },
+        {
+          "id": "68Rgj8T2",
+          "path": ["68Rgj8T2"],
+          "type": "terria-reference",
+          "isGroup": true,
+          "url": "https://terria-catalogs-public.storage.googleapis.com/nationalmap/catalog/transport/prod.json",
+          "name": "Transport",
+          "shareKeys": ["Root Group/National Datasets/Transport"]
+        },
+        {
+          "id": "1g57wdJg",
+          "path": ["1g57wdJg"],
+          "type": "terria-reference",
+          "isGroup": true,
+          "url": "https://terria-catalogs-public.storage.googleapis.com/nationalmap/catalog/vegetation/prod.json",
+          "name": "Vegetation",
+          "shareKeys": ["Root Group/National Datasets/Vegetation"]
+        },
+        {
+          "id": "Ze35VkjZ",
+          "path": ["Ze35VkjZ"],
+          "type": "terria-reference",
+          "isGroup": true,
+          "url": "https://terria-catalogs-public.storage.googleapis.com/nationalmap/catalog/water/prod.json",
+          "name": "Water",
+          "shareKeys": ["Root Group/National Datasets/Water"]
+        }
+      ],
+      "isOpen": true,
+      "shareKeys": ["Root Group/National Datasets"]
+    },
+    {
+      "name": "Data.gov.au",
+      "id": "6TbYz2Jj",
+      "shareKeys": ["Root Group/Data.gov.au"],
+      "path": ["6TbYz2Jj"],
+      "url": "https://terria-catalogs-public.storage.googleapis.com/common/aus-gov-open-data/data-gov-au/prod.json",
+      "type": "terria-reference",
+      "isGroup": true
+    },
+    {
+      "id": "5UEEtwte",
+      "name": "New South Wales Government",
+      "shareKeys": ["Root Group/New South Wales Government"],
+      "url": "https://terria-catalogs-public.storage.googleapis.com/common/aus-gov-open-data/nsw/prod.json",
+      "type": "terria-reference",
+      "isGroup": true
+    },
+    {
+      "name": "Northern Territory Government",
+      "url": "https://terria-catalogs-public.storage.googleapis.com/common/aus-gov-open-data/nt/prod.json",
+      "id": "A3fz19Mn",
+      "type": "terria-reference",
+      "isGroup": true
+    },
+    {
+      "id": "DCie2ghD",
+      "name": "Queensland Government",
+      "shareKeys": ["Root Group/Queensland Government"],
+      "url": "https://terria-catalogs-public.storage.googleapis.com/common/aus-gov-open-data/qld/prod.json",
+      "type": "terria-reference",
+      "isGroup": true
+    },
+    {
+      "name": "South Australia Government",
+      "url": "https://terria-catalogs-public.storage.googleapis.com/common/aus-gov-open-data/sa/prod.json",
+      "id": "i8H83Dhj",
+      "type": "terria-reference",
+      "isGroup": true
+    },
+    {
+      "id": "PdL1jdCG",
+      "name": "Tasmanian Government",
+      "shareKeys": ["Root Group/Tasmanian Government"],
+      "url": "https://terria-catalogs-public.storage.googleapis.com/common/aus-gov-open-data/tas/prod.json",
+      "type": "terria-reference",
+      "isGroup": true
+    },
+    {
+      "name": "Victoria Government",
+      "id": "E2nsA20d",
+      "url": "https://terria-catalogs-public.storage.googleapis.com/common/aus-gov-open-data/vic/prod.json",
+      "type": "terria-reference",
+      "isGroup": true
+    },
+    {
+      "name": "Western Australia Government",
+      "url": "https://terria-catalogs-public.storage.googleapis.com/common/aus-gov-open-data/wa/prod.json",
+      "id": "Ne92VxU7",
+      "type": "terria-reference",
+      "isGroup": true
+    },
+    {
+      "name": "Analysis Tools",
+      "description": "<p>This catalogue group will include examples of tools and workflows aimed at specific use cases.</p><p>The first example is the \"Change detection\" workflow. It supports understanding variances in vegetation cover when using satellite imagery such as Landsat and Sentinel-2.  Check this <a href=\"https://userguide.terria.io/interactions-functionalities-and-workflows#change-detection-delta-workflow\">guide</a>for more information.</p>",
+      "type": "group",
+      "members": [
+        {
+          "name": "Change detection using DEA Surface Reflectance (Landsat and Sentinel-2)",
+          "url": "https://raw.githubusercontent.com/GeoscienceAustralia/dea-config/master/prod/terria/dea-maps-v8.json",
+          "path": ["CqkxcG", "Wqpk8F"],
+          "id": "a-copy-of-Wqpk8F",
+          "type": "terria-reference"
+        }
+      ]
+    }
+  ],
+  "corsDomains": ["172.28.0.1", "arbormeta.earth"],
+  // "homeCamera": {
+  //   "north": -8,
+  //   "east": 158,
+  //   "south": -45,
+  //   "west": 109
+  // },
+  "InitialCamera": {
+    "north": -29.34,
+    "east": 144.82,
+    "south": -29.535,
+    "west": 144.657
+  },
+  "homeCamera": {
+    "north": -29.34,
+    "east": 144.82,
+    "south": -29.535,
+    "west": 144.657
+  },
+  "baseMaps": {
+    "enabledBaseMaps": [
+      "basemap-australian-topography",
+      "basemap-bing-aerial",
+      "basemap-bing-aerial-with-labels",
+      "basemap-positron",
+      "basemap-darkmatter",
+      "basemap-voyager",
+      "basemap-greyscale"
+    ],
+    "defaultBaseMapId": "basemap-bing-aerial-with-labels",
+    "previewBaseMapId": "basemap-positron",
+    "items": [
+      {
+        "item": {
+          "id": "basemap-australian-topography",
+          "type": "esri-mapServer",
+          "name": "National Base Map",
+          "url": "https://services.ga.gov.au/gis/rest/services/NationalBaseMap/MapServer",
+          "opacity": 1
+        },
+        "image": "images/basemaps/australian-topo.png"
+      },
+      {
+        "item": {
+          "id": "basemap-voyager",
+          "type": "open-street-map",
+          "name": "Voyager",
+          "url": "https://global.ssl.fastly.net/rastertiles/voyager/",
+          "attribution": "© OpenStreetMap contributors ODbL, © CartoDB CC-BY 3.0",
+          "opacity": 1,
+          "subdomains": [
+            "cartodb-basemaps-a",
+            "cartodb-basemaps-b",
+            "cartodb-basemaps-c",
+            "cartodb-basemaps-d"
+          ]
+        },
+        "image": "https://terria-catalogs-public.storage.googleapis.com/misc/basemaps/icons/voyager-aus.png"
+      },
+      {
+        "item": {
+          "id": "basemap-greyscale",
+          "type": "esri-mapServer",
+          "name": "Grey Scale",
+          "url": "https://services.ga.gov.au/gis/rest/services/NationalBaseMap_GreyScale/MapServer",
+          "opacity": 1
+        },
+        "image": "https://terria-catalogs-public.storage.googleapis.com/nationalmap/images/base-maps/australia-grey-scale.png"
+      }
+    ]
+  }
+}

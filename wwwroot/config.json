@@ -44,14 +44,15 @@
     // See comments in lib/Views/global.scss for further information about customising colors, logos, fonts etc.
     "brandBarElements": [
       "<a target=\"_blank\" href=\"https://arbormeta.au\"><img src=\"images/ARBOR_LARGE_GREEN.png\" tabindex=\"-1\" height=\"252\" title=\"ArborMeta Home\" /></a>",
-      "<a target=\"_blank\" href=\"https://arbormeta.earth/dashboard/\"><img src=\"images/database_rounded.png\" tabindex=\"-1\" height=\"252\" title=\"ArborMeta Database App\" /></a>"
+      "<a target=\"_blank\" href=\"https://172.29.126.37:8043/dashboard/\"><img src=\"images/database_rounded.png\" tabindex=\"-1\" height=\"252\" title=\"ArborMeta Database App\" /></a>"
     ],
     // Shown when things go wrong.
     "supportEmail": "info@arbormeta.au.com",
     // You probably shouldn't change this.
     "proj4ServiceBaseUrl": "proj4def/",
     // Or this
-    "feedbackUrl": "http://localhost:8043/api/v1/terria/feedback_new/",
+    "feedbackUrl": "https://172.29.126.37:8043/api/v1/terria/feedback_new/",
+    "treesAppUrl": "https://172.29.126.37:8043/api/v1/",
     "feedbackMinLength": 3,
     // Default mobile viewer mode when loading the map for the first time on mobile platforms.
     // Options are: "3DTerrain", "3DSmooth", "2D"
@@ -71,9 +72,6 @@
     // True to display in-app guides.
     // "showInAppGuides": false,
     // see `languageOverrides.json` in languages/en
-    "treesApp": {
-      "apiUrl": "https://arbormeta.earth/api/v1/"
-    },
     "languageConfiguration": {
       "enabled": false,
       "debug": false,
