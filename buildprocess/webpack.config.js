@@ -64,6 +64,9 @@ module.exports = function (devMode, hot) {
                   ["@babel/typescript", { allowNamespaces: true }]
                 ],
                 plugins: [
+                  new EnvironmentPlugin({
+                    DJANGO_API_URL: "http://localhost:8043/api/v1/"
+                  }),
                   "babel-plugin-jsx-control-statements",
                   "@babel/plugin-transform-modules-commonjs",
                   ["@babel/plugin-proposal-decorators", { legacy: true }],
