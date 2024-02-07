@@ -5,6 +5,7 @@ var configureWebpackForTerriaJS = require("terriajs/buildprocess/configureWebpac
 var configureWebpackForPlugins = require("./configureWebpackForPlugins");
 var MiniCssExtractPlugin = require("mini-css-extract-plugin");
 var path = require("path");
+const { EnvironmentPlugin } = require("webpack");
 
 module.exports = function (devMode, hot) {
   var config = {
