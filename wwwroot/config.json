@@ -43,11 +43,14 @@
     "hideTerriaLogo": true,
     // See comments in lib/Views/global.scss for further information about customising colors, logos, fonts etc.
     "brandBarElements": [
-      "<a target=\"_blank\" href=\"https://arbormeta.au\"><img src=\"images/ARBOR_LARGE_GREEN.png\" tabindex=\"-1\"  title=\"ArborMeta Home\" /></a>",
-      "<a target=\"_blank\" href=\"http://localhost:8043/dashboard/\"><img src=\"images/database-app.png\" tabindex=\"-1\"  title=\"ArborMeta Database App\" /></a>",
+      "<a tabindex=\"-1\" target=\"_blank\" href=\"https://arbormeta.au\"><img src=\"images/ARBOR_LARGE_GREEN.png\" tabindex=\"-1\"  title=\"ArborMeta Home\" /></a>",
+      "<a tabindex=\"-1\" target=\"_blank\" href=\"http://localhost:8043/dashboard/\"><img src=\"images/database-app.png\" tabindex=\"-1\"  title=\"ArborMeta Database App\" /></a>",
       "&nbsp;"
     ],
-    // "brandBarSmallElements": [],
+    "brandBarSmallElements": [
+      "<a tabindex=\"-1\" target=\"_blank\" href=\"https://arbormeta.au\"><img src=\"images/ARBOR_SMALL_GREEN.png\" tabindex=\"-1\"  title=\"ArborMeta Home\" /></a>",
+      "<a tabindex=\"-1\" target=\"_blank\" href=\"http://localhost:8043/dashboard/\"><img src=\"images/database-app.png\" tabindex=\"-1\"  title=\"ArborMeta Database App\" /></a>"
+    ],
     // Shown when things go wrong.
     "supportEmail": "info@arbormeta.au.com",
     // You probably shouldn't change this.
