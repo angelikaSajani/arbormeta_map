@@ -76,7 +76,8 @@ export default function sendFeedback(options: {
       }
 
       // AIS: using fetch instead of loadWithXhr              < =====================================================================================
-      let url: string = terria.configParameters.feedbackUrl!;
+      const url: string =
+        terria.configParameters.feedbackUrl! + "terria/feedback_new/";
       return fetch(url, {
         method: "POST",
         credentials: "include", //credentials: 'omit',

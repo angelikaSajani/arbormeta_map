@@ -13,8 +13,11 @@ import { env } from "process";
 import ViewState from "terriajs/lib/ReactViewModels/ViewState";
 
 export class ViewState_Arbm extends ViewState {
-  @observable treesAppUrl: string =
-    process.env.DJANGO_API_URL || "http://localhost:8043/api/v1/";
+  @computed
+  get treesAppUrl(): string {
+    if (!this.terria || !this.terria.configParameters) return "";
+    return this.terria.configParameters.feedbackUrl || "";
+  }
 
   @observable loginData?: LoginData;
 

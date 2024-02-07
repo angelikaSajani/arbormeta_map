@@ -52,9 +52,17 @@
     "supportEmail": "info@arbormeta.au.com",
     // You probably shouldn't change this.
     "proj4ServiceBaseUrl": "proj4def/",
-    // Or this
-    "feedbackUrl": "http://localhost:8043/api/v1/terria/feedback_new/",
+
+    // In order to avoid having to add new items to the configuration, we are ABUSING this entry to store the base-URL
+    // for the Django-webserver API, rather than the correct endpoint for creating feedback records.
+    // This avoids having to 'copy-paste' override more terriajs code than absolutely necessary.
+    // Ideally we could do additional configuration with environment variables, but that would envolve installing dotenv-webpack
+    // (to make environment variable visible in tbe browser) and when trying to do so I run into depencency conflicts.
+    // Our own implementation of sendFeedback appends the correct endpoint-suffix to make this work.
+    // Our overridden version of ViewState copies this value into the property 'treesAppUrl'.
+    "feedbackUrl": "http://localhost:8043/api/v1/",
     "feedbackMinLength": 3,
+
     // Default mobile viewer mode when loading the map for the first time on mobile platforms.
     // Options are: "3DTerrain", "3DSmooth", "2D"
     "mobileDefaultViewerMode": "2d",

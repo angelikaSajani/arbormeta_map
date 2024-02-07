@@ -5,7 +5,6 @@ var configureWebpackForTerriaJS = require("terriajs/buildprocess/configureWebpac
 var configureWebpackForPlugins = require("./configureWebpackForPlugins");
 var MiniCssExtractPlugin = require("mini-css-extract-plugin");
 var path = require("path");
-const { EnvironmentPlugin } = require("webpack");
 
 module.exports = function (devMode, hot) {
   var config = {
@@ -65,9 +64,6 @@ module.exports = function (devMode, hot) {
                   ["@babel/typescript", { allowNamespaces: true }]
                 ],
                 plugins: [
-                  new EnvironmentPlugin({
-                    DJANGO_API_URL: "http://localhost:8043/api/v1/"
-                  }),
                   "babel-plugin-jsx-control-statements",
                   "@babel/plugin-transform-modules-commonjs",
                   ["@babel/plugin-proposal-decorators", { legacy: true }],
