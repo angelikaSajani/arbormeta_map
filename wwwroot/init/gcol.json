@@ -1,14 +1,7 @@
 {
   // "workbench": [],
   "previewedItemId": [],
-  "workbench": [
-    // "Mau_bound",
-    // "dungmau_als",
-    // "mau_rgb",
-    // "mau_cc",
-    // "mau_ca",
-    // "mau_ca18"
-  ],
+  "workbench": ["Mau_bound", "mau_ca", "mau_ca18"],
   // "showSplitter": true,
   // "splitPosition": 0.5,
   "catalog": [
