@@ -38,6 +38,7 @@
         },*/
     // This is used in various text messages. You should also set <title> in index.html
     "appName": "ArborMeta",
+    // mine: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIwODU4NDNmNi1mYzk3LTRkODUtOGM3Mi04ZTg4ZjI5N2E5MDkiLCJpZCI6MTk0OTcxLCJpYXQiOjE3MDc1NTUxMDR9.5ow8tbQO7Y7feKy3oHm0kruXyjsEEQ2LHOKgg1CzfUA
     "cesiumIonAccessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJjYmUyMmIxZC01MDAwLTRiZTMtOWQwZC1kNzRlN2M5MzI5OGUiLCJpZCI6MTcwMzg1LCJpYXQiOjE2OTY2NDM2ODN9.0_Lcp4EW5yn-15Afy11sjTAoE5wt6wfJl4gSSpeqN7Y",
     "bingMapsKey": "Aqpna-6uSGUMG9yH9pG2am5nxzTi25q_xyfasu88h6qwf6f_K94c1fkrcHu6tf8T",
     "hideTerriaLogo": true,

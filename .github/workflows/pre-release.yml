@@ -1,8 +1,8 @@
-name: Release
+name: Preproduction Release
 
 on:
   release:
-    types: [published]
+    types: [released]
 
 env:
   REGISTRY: ghcr.io
@@ -25,7 +25,7 @@ jobs:
         with:
           # list of Docker images to use as base name for tags
           images: |
-            ghcr.io/angelikasajani/arbormeta_map
+            ghcr.io/angelikasajani/arbormeta_map_preprod
           # generate Docker tags based on the following events/attributes
           tags: |
             type=semver,pattern={{version}}
