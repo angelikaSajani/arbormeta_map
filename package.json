@@ -21,15 +21,16 @@
   },
   "dependencies": {
     "@types/rc-slider": "^8.6.6",
-    "terriajs": "^8.4.0",
-    "terriajs-plugin-api": "0.0.1-alpha.6",
-    "terriajs-plugin-sample": "0.0.1-alpha.7",
-    "terriajs-server": "^4.0.0",
     "mobx": "^6.7.0",
     "mobx-react": "7.6.0",
     "mobx-utils": "^6.0.5",
     "rc-slider": "^9.7.2",
-    "terriajs-cesium": "1.92.0-tile-error-provider-fix-2"
+    "terriajs": "^8.4.0",
+    "terriajs-cesium": "1.92.0-tile-error-provider-fix-2",
+    "terriajs-plugin-api": "0.0.1-alpha.6",
+    "terriajs-plugin-sample": "0.0.1-alpha.7",
+    "terriajs-server": "^4.0.0",
+    "typescript-cookie": "^1.0.6"
   },
   "config": {
     "docker": {

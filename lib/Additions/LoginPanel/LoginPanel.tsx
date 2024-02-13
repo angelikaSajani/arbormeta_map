@@ -18,6 +18,8 @@ import {
   LoginData
 } from "../../terriajsOverrides/ViewState_Arbm";
 
+import { fetchFromAPI } from "../utils";
+
 import {
   base64_decode_urlsafe,
   base64_encode_arrayBuffer_urlsafe,
@@ -245,17 +247,9 @@ class LoginPanel extends React.Component<PropTypes, LoginPanelState> {
     this.updateModus("loading", "");
 
     const viewState = this.props.viewState;
-    const url =
-      viewState.treesAppUrl! +
-      "accounts/authenticator_opts/get/" +
-      this.state.username +
-      "/";
-    return fetch(url, {
-      method: "OPTIONS",
-      credentials: "omit",
-      mode: "cors",
-      cache: "no-cache"
-    })
+    const urlTail =
+      "accounts/authenticator_opts/get/" + this.state.username + "/";
+    return fetchFromAPI(viewState, urlTail, null, "OPTIONS")
       .then((resp) => resp.json())
       .then((data) => {
         // handle errors even if we get a response
@@ -390,7 +384,6 @@ class LoginPanel extends React.Component<PropTypes, LoginPanelState> {
   private tryLogin = async () => {
     this.updateModus("loading", "");
     const viewState = this.props.viewState;
-    const url = viewState.treesAppUrl! + "auth/login/";
 
     if (
       !this.state.password &&
@@ -406,7 +399,7 @@ class LoginPanel extends React.Component<PropTypes, LoginPanelState> {
     const usingAuthenticator: boolean =
       this.state.authData!.userInfo.hasAuthenticators;
 
-    const body_o: LoginRequestBody = {
+    const body: LoginRequestBody = {
       username: this.state.username
     };
     if (usingAuthenticator) {
@@ -422,38 +415,33 @@ class LoginPanel extends React.Component<PropTypes, LoginPanelState> {
         this.closePanel(); // this means user when supposed to use their security key cancelled out, or it timed out.
         return;
       }
-      body_o.digest = JSON.stringify(browserVerificationResults);
-      body_o.authenticator_id = browserVerificationResults.id;
+      body.digest = JSON.stringify(browserVerificationResults);
+      body.authenticator_id = browserVerificationResults.id;
     } else {
-      body_o.password = this.state.password;
+      body.password = this.state.password;
     }
-    const body = JSON.stringify(body_o);
 
     try {
-      const response = await fetch(url, {
-        method: "POST",
-        credentials: "omit",
-        cache: "no-cache",
-        mode: "cors",
-        body: body,
-        headers: {
-          "Content-Type": "application/json"
-        }
-      });
+      const response = await fetchFromAPI(
+        viewState,
+        "auth/login/session/",
+        body,
+        "POST"
+      );
 
       // Check if the response status is within the 2xx range
       if (!response.ok) {
-        console.log("authentication fetch failed");
+        console.log("authentication via 'auth/login/session/' failed.");
         this.handleAuthenticationFailure(
           usingAuthenticator,
           "Authentication Failed"
         );
       } else {
         const data = await response.json();
-        if (!("user" in data) && "expiry" in data && "token" in data) {
-          console.log("incorrect login response");
+        debugger;
+        if (!("user" in data) || !Boolean(data.sessionid)) {
           console.error(
-            "Invalid response when trying to log into Django server!"
+            "Invalid response when trying to log into Django server:"
           );
           console.error(data);
           this.handleAuthenticationFailure(

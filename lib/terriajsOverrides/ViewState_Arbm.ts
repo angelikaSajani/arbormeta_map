@@ -8,9 +8,11 @@
 // ================================================================================================================================================
 
 import { action, observable, makeObservable, computed } from "mobx";
-import { env } from "process";
+import { setCookie, removeCookie } from "typescript-cookie";
 
 import ViewState from "terriajs/lib/ReactViewModels/ViewState";
+
+const SESSION_COOKIE_NAME = "sessionid";
 
 export class ViewState_Arbm extends ViewState {
   @computed
@@ -23,16 +25,21 @@ export class ViewState_Arbm extends ViewState {
 
   @action login(loginData: LoginData) {
     this.loginData = loginData;
+    setCookie(SESSION_COOKIE_NAME, loginData.sessionid, {
+      sameSite: "None",
+      secure: true
+    }); // no expiry -> session cookie
   }
 
   @action logout() {
+    removeCookie(SESSION_COOKIE_NAME);
     this.loginData = undefined;
   }
 
-  @computed
-  get authTokenHeader(): string {
-    return this.loginData === undefined ? "" : "Token " + this.loginData.token;
-  }
+  //   @computed
+  //   get authTokenHeader(): string {
+  //     return this.loginData === undefined ? "" : "Token " + this.loginData.token;
+  //   }
 
   @computed
   get userBestName(): string {
@@ -69,8 +76,7 @@ export interface User {
 
 export interface LoginData {
   user: User;
-  expiry: string;
-  token: string;
+  sessionid: string;
 }
 
 export interface WithViewState_Arbm {
