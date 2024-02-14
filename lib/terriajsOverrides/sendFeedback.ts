@@ -69,6 +69,7 @@ export default function sendFeedback(options: {
       // AIS: using fetch instead of loadWithXhr              < =====================================================================================
       return fetchFromAPI(
         viewState,
+        null,
         "terria/feedback_new/",
         feedbackData,
         "POST"
