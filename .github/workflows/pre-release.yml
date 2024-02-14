@@ -3,6 +3,7 @@ name: Preproduction Release
 on:
   release:
     types: [released]
+    branches: [preprod]
 
 env:
   REGISTRY: ghcr.io
