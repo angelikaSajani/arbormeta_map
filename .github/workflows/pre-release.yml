@@ -2,8 +2,7 @@ name: Preproduction Release
 
 on:
   release:
-    types: [released]
-    branches: [preprod]
+    types: [prereleased]
 
 env:
   REGISTRY: ghcr.io
