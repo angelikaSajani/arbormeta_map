@@ -13,7 +13,7 @@ import MenuPanel from "terriajs/lib/ReactViews/StandardUserInterface/customizabl
 import Spacing from "terriajs/lib/Styled/Spacing";
 
 import { ViewState_Arbm as ViewState } from "../../terriajsOverrides/ViewState_Arbm";
-import { getCookie, fetchFromAPI } from "../utils";
+import { fetchFromAPI } from "../utils";
 
 import Styles from "./logout-panel.scss";
 
