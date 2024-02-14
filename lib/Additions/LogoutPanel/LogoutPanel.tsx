@@ -13,6 +13,7 @@ import MenuPanel from "terriajs/lib/ReactViews/StandardUserInterface/customizabl
 import Spacing from "terriajs/lib/Styled/Spacing";
 
 import { ViewState_Arbm as ViewState } from "../../terriajsOverrides/ViewState_Arbm";
+import { fetchFromAPI } from "../utils";
 
 import Styles from "./logout-panel.scss";
 
@@ -84,21 +85,12 @@ interface ILogoutButtonProps {
 function LogoutButton({ viewState, t }: ILogoutButtonProps) {
   const handleLogoutClick = async () => {
     try {
-      const authTokenHeader = viewState.authTokenHeader;
-      if (authTokenHeader) {
-        // This tells the server that the user has logged out -> deletes the token from the databasee
-        const url = viewState.treesAppUrl! + "auth/logout/";
-        const _ = await fetch(url, {
-          method: "POST",
-          credentials: "omit",
-          mode: "cors",
-          cache: "no-cache",
-          body: "{}",
-          headers: {
-            Authorization: authTokenHeader
-          }
-        });
-      }
+      const _ = await fetchFromAPI(
+        viewState,
+        "auth/logout/session/",
+        {},
+        "POST"
+      );
     } catch (error) {
       console.error(error);
     } finally {

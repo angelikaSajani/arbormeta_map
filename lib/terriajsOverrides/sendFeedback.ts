@@ -15,6 +15,7 @@ import {
 
 import Terria from "terriajs/lib/Models/Terria";
 import { ViewState_Arbm as ViewState } from "./ViewState_Arbm"; // AIS: user our override  < ==============
+import { fetchFromAPI } from "../Additions/utils";
 
 export default function sendFeedback(options: {
   terria: Terria;
@@ -65,27 +66,13 @@ export default function sendFeedback(options: {
         );
       }
 
-      // AIS, added/modified                                 < =====================================================================================
-      // Tell the server who's logged in
-      const headers: Record<string, string> = {
-        "Content-Type": "application/json"
-      };
-      const authTokenHeader = viewState.authTokenHeader;
-      if (authTokenHeader) {
-        headers["Authorization"] = authTokenHeader;
-      }
-
       // AIS: using fetch instead of loadWithXhr              < =====================================================================================
-      const url: string =
-        terria.configParameters.feedbackUrl! + "terria/feedback_new/";
-      return fetch(url, {
-        method: "POST",
-        credentials: "include", //credentials: 'omit',
-        mode: "cors", // ====
-        cache: "no-cache",
-        body: JSON.stringify(feedbackData),
-        headers: headers
-      });
+      return fetchFromAPI(
+        viewState,
+        "terria/feedback_new/",
+        feedbackData,
+        "POST"
+      );
     })
     .then(function (json) {
       if (json instanceof String) {

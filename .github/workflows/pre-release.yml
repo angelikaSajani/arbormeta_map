@@ -2,7 +2,7 @@ name: Preproduction Release
 
 on:
   release:
-    types: [released]
+    types: [prereleased]
 
 env:
   REGISTRY: ghcr.io
@@ -18,6 +18,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: preprod
 
       - name: Docker Meta
         id: meta
@@ -29,8 +31,6 @@ jobs:
           # generate Docker tags based on the following events/attributes
           tags: |
             type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}
             type=sha
 
       - name: Set up QEMU
