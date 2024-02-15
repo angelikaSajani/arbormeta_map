@@ -7,14 +7,28 @@
 //       that only seems possible if we do NOT export ViewState_Arbm as the default
 // ================================================================================================================================================
 
-import { action, observable, makeObservable, computed } from "mobx";
+import {
+  action,
+  observable,
+  makeObservable,
+  computed,
+  runInAction
+} from "mobx";
 import { setCookie, removeCookie } from "typescript-cookie";
 
 import ViewState from "terriajs/lib/ReactViewModels/ViewState";
+import { sessionStorageDefined } from "../Additions/utils";
 
 const SESSION_COOKIE_NAME = "sessionid";
 
 export class ViewState_Arbm extends ViewState {
+  constructor(options: any /* ViewStateOptions */) {
+    // ViewStateOptions is not exported by terriajs
+    super(options);
+
+    makeObservable(this);
+  }
+
   @computed
   get treesAppUrl(): string {
     if (!this.terria || !this.terria.configParameters) return "";
@@ -55,12 +69,6 @@ export class ViewState_Arbm extends ViewState {
     if (this.loginData === undefined) return "";
     let user = this.loginData.user!;
     return user.email;
-  }
-
-  constructor(options: any /* ViewStateOptions */) {
-    // ViewStateOptions is not exported by terriajs
-    super(options);
-    makeObservable(this);
   }
 }
 
