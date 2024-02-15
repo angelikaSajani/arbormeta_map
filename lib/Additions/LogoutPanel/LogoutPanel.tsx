@@ -13,7 +13,7 @@ import MenuPanel from "terriajs/lib/ReactViews/StandardUserInterface/customizabl
 import Spacing from "terriajs/lib/Styled/Spacing";
 
 import { ViewState_Arbm as ViewState } from "../../terriajsOverrides/ViewState_Arbm";
-import { fetchFromAPI } from "../utils";
+import { fetchFromAPI, sanitizeHTML } from "../utils";
 
 import Styles from "./logout-panel.scss";
 
@@ -26,10 +26,12 @@ type PropTypes = WithTranslation & {
 
 interface LogoutPanelState {
   isOpen: boolean;
+  waiting: boolean;
 }
 
 const INITIAL_STATE: LogoutPanelState = {
-  isOpen: false
+  isOpen: false,
+  waiting: false
 };
 
 // ==============================================================================================================
@@ -52,12 +54,39 @@ class LogoutPanel extends React.Component<PropTypes, LogoutPanelState> {
     this.keyListener = (e) => {
       if (e.key === "Escape") {
         this.closePanel();
+      } else if (e.key == "Enter") {
+        this.onLogoutClick();
       }
     };
 
     this.state = { ...INITIAL_STATE };
-    makeObservable(this);
+    // makeObservable(this);
   }
+
+  // ---------------------------------------------------------------------------------------------------
+
+  onLogoutClick = async () => {
+    this.setState({ waiting: true });
+    const signal = this.abortController?.signal ?? null;
+    try {
+      const _ = await fetchFromAPI(
+        this.props.viewState,
+        signal,
+        "auth/logout/session/",
+        {},
+        "POST"
+      );
+    } catch (error) {
+      if (error.name && error.name !== "AbortError") {
+        console.warn(error.message + "\nLOGGED OUT ANYWAY.");
+      }
+    } finally {
+      // This updates the UI to show the user as logged out
+      // We do this in the finally clause, because we need to logout in the front end
+      //   EVEN IF we didn't successfully log out from the server
+      this.props.viewState.logout();
+    }
+  };
 
   // ---------------------------------------------------------------------------------------------------
 
@@ -72,6 +101,7 @@ class LogoutPanel extends React.Component<PropTypes, LogoutPanelState> {
     window.removeEventListener("keydown", this.keyListener, true);
     this.abortController?.abort();
     this.abortController = undefined;
+    this.setState({ waiting: false });
   };
 
   // ---------------------------------------------------------------------------------------------------
@@ -119,7 +149,7 @@ class LogoutPanel extends React.Component<PropTypes, LogoutPanelState> {
     if (!user) return null;
 
     const name = user.first_name ? user.first_name : user.username;
-
+    const waiting = this.state.waiting;
     const dropdownTheme = {
       inner: Styles.dropdownInner,
       icon: "user"
@@ -135,51 +165,42 @@ class LogoutPanel extends React.Component<PropTypes, LogoutPanelState> {
         viewState={this.props.viewState}
         smallScreen={this.props.viewState.useSmallScreenInterface}
       >
-        <Box padded column>
-          <Spacing bottom={3} />
-          <Text bold as="label">
-            {t("logoutPanel.areYouSure").replace("$name", name)}
-          </Text>
-          <Spacing bottom={3} />
-          <LogoutButton viewState={this.props.viewState} t={t} />
-        </Box>
+        <>
+          {waiting && <div>Logging out...</div>}
+          {!waiting && (
+            <Box padded column>
+              <Spacing bottom={3} />
+              <Text bold as="label">
+                {t("logoutPanel.areYouSure", { name: sanitizeHTML(name) })}
+              </Text>
+              <Spacing bottom={3} />
+              <LogoutButton onLogoutClick={this.onLogoutClick} t={t} />
+            </Box>
+          )}
+        </>
       </MenuPanel>
     );
   }
 }
 
+// ==============================================================================================================
+
 interface ILogoutButtonProps {
-  viewState: ViewState;
+  onLogoutClick: () => void;
   t: TFunction;
 }
 
-function LogoutButton({ viewState, t }: ILogoutButtonProps) {
-  const handleLogoutClick = async () => {
-    const signal = this.abortController?.signal ?? null;
-    try {
-      const _ = await fetchFromAPI(
-        viewState,
-        signal,
-        "auth/logout/session/",
-        {},
-        "POST"
-      );
-    } catch (error) {
-      if (error.name && error.name !== "AbortError") {
-        console.error(error);
-      }
-    } finally {
-      // This updates the UI to show the user as logged out
-      viewState.logout();
-    }
-  };
+// ==============================================================================================================
 
+function LogoutButton({ onLogoutClick, t }: ILogoutButtonProps) {
   return (
-    <Button rounded={true} primary={true} onClick={handleLogoutClick}>
+    <Button rounded={true} primary={true} onClick={onLogoutClick}>
       {t("logoutPanel.btnText")}
     </Button>
   );
 }
+
+// ==============================================================================================================
 
 export const LOGOUT_PANEL_NAME = "MenuBarLogoutButton";
 export default withTranslation()(

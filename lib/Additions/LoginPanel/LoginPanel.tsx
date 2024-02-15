@@ -2,7 +2,7 @@ import { TFunction } from "i18next";
 import React from "react";
 import { observer } from "mobx-react";
 import { withTranslation, WithTranslation } from "react-i18next";
-import { DefaultTheme, withTheme } from "styled-components";
+import styled, { DefaultTheme, withTheme } from "styled-components";
 
 import Button from "terriajs/lib/Styled/Button";
 import Box from "terriajs/lib/Styled/Box";
@@ -12,6 +12,8 @@ import Input from "terriajs/lib/Styled/Input";
 import withTerriaRef from "terriajs/lib/ReactViews/HOCs/withTerriaRef";
 import MenuPanel from "terriajs/lib/ReactViews/StandardUserInterface/customizable/MenuPanel";
 import Styles from "./login-panel.scss";
+import { DisplayError } from "../custom-errors";
+import { sanitizeHTML } from "../utils";
 
 import {
   ViewState_Arbm as ViewState,
@@ -99,12 +101,17 @@ const INITIAL_STATE: LoginPanelState = {
   error: ""
 };
 
+const Form = styled(Box).attrs({
+  overflowY: "auto",
+  scroll: true,
+  as: "form"
+})``;
+
 // ==============================================================================================================
 
 //@ts-ignore
 @observer
 class LoginPanel extends React.Component<PropTypes, LoginPanelState> {
-  viewState?: ViewState;
   keyListener: (e: any) => void;
   abortController?: AbortController;
 
@@ -170,6 +177,8 @@ class LoginPanel extends React.Component<PropTypes, LoginPanelState> {
     // Since aborting is supposed to open when the user closes the LoginPanel, but
     // closing the LoginPanel only closes it, but does not necessarily unmount it,
     // we have to re-create a new AbortController for when the user tries again to log in.
+
+    // console.log('----- creating new AbortController');
     this.abortController?.abort();
     this.abortController = new AbortController();
   }
@@ -280,7 +289,7 @@ class LoginPanel extends React.Component<PropTypes, LoginPanelState> {
   private fetchUser = async () => {
     this.updateModus("loading", "");
 
-    const viewState = this.props.viewState;
+    const { t, viewState } = this.props;
     const urlTail =
       "accounts/authenticator_opts/get/" + this.state.username + "/";
     const signal = this.abortController?.signal ?? null;
@@ -293,10 +302,10 @@ class LoginPanel extends React.Component<PropTypes, LoginPanelState> {
         if (errorMsg) throw new Error(errorMsg);
         if (data.userInfo === undefined || data.parameters === undefined) {
           console.error(
-            "Invalid response from Django server to api/v1/accounts/authenticator_opts/get/:"
+            t("django.errors.invalidResponse", { urlTail: urlTail })
           );
           console.error(data);
-          throw new Error("Server Error");
+          throw new DisplayError("Django server error: invalid response.");
         }
 
         if (data.userInfo.hasAuthenticators || data.userInfo.hasPassword) {
@@ -304,8 +313,10 @@ class LoginPanel extends React.Component<PropTypes, LoginPanelState> {
             // convert the parameters to the format we need to authenticate
             const parms = data.parameters;
             if (parms.allowCredentials.length === 0) {
-              throw new Error(
-                "You do not have any valid secirity keys, please contact the site administrator."
+              throw new DisplayError(
+                t("loginPanel.errors.noSecurityKey", {
+                  email: viewState.terria.supportEmail
+                })
               );
             }
             parms.challenge = base64_decode_urlsafe(parms.challenge).buffer;
@@ -338,15 +349,30 @@ class LoginPanel extends React.Component<PropTypes, LoginPanelState> {
       // chances are this happened because the panel was closed, but make extra sure
       this.changeOpenState(false);
       this.resetState();
-    } else if (error.name === "TimeoutError") {
+    } else if (error.name === "TimeoutError" || error.name === "DisplayError") {
+      const { t, viewState } = this.props;
       this.closePanel();
       this.resetState();
-      throw Error(
-        "The Django server seems non-responsive. Check your internet connection and try again later."
-      );
+      const message =
+        error.name === "DisplayError"
+          ? error.message
+          : t("django.errors.unresponsive", {
+              email: viewState.terria.supportEmail
+            });
+      this.displayError(message);
     } else {
       this.updateModus("typing", error.message);
     }
+  }
+
+  // ---------------------------------------------------------------------------------------------------
+
+  private displayError(message: string) {
+    const { t, viewState } = this.props;
+    viewState.terria.notificationState.addNotificationToQueue({
+      title: t("loginPanel.errors.title"),
+      message: message
+    });
   }
 
   // ---------------------------------------------------------------------------------------------------
@@ -445,16 +471,13 @@ class LoginPanel extends React.Component<PropTypes, LoginPanelState> {
 
   private tryLogin = async () => {
     this.updateModus("loading", "");
-    const viewState = this.props.viewState;
+    const { t, viewState } = this.props;
 
     if (
       !this.state.password &&
       !this.state.authData!.userInfo.hasAuthenticators
     ) {
-      this.handleAuthenticationFailure(
-        true,
-        "To log in you need either a password or a security. Please contact the site administrator."
-      );
+      this.handleAuthenticationFailure(true, t("loginPanel.errors.noKeyOrPW"));
       return;
     }
 
@@ -501,7 +524,9 @@ class LoginPanel extends React.Component<PropTypes, LoginPanelState> {
         console.error(data);
         this.handleAuthenticationFailure(
           usingAuthenticator,
-          "Invalid response from server"
+          t("django.errors.invalidResponse", {
+            urlTail: "/auth/login/session/"
+          })
         );
       } else {
         this.login(data);
@@ -535,6 +560,11 @@ class LoginPanel extends React.Component<PropTypes, LoginPanelState> {
 
     const errorMsg = this.state.error;
 
+    function _onSubmit(e: React.FormEvent<HTMLFormElement | HTMLDivElement>) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
     return (
       //@ts-ignore - not yet ready to tackle tsfying MenuPanel
       <MenuPanel
@@ -561,12 +591,13 @@ class LoginPanel extends React.Component<PropTypes, LoginPanelState> {
 
           {currentStep == "typingUsername" && (
             <Box column>
-              <Text as="label">{"Please enter your username"}</Text>
+              <Text as="label">{t("loginPanel.enterUsername")}</Text>
               <Spacing bottom={3} />
               <Input
                 dark
                 type="text"
-                placeholder={"Username"}
+                autoComplete="username"
+                placeholder={t("loginPanel.username")}
                 value={this.state.username}
                 onClick={(e) => e.currentTarget.select()}
                 onChange={(e) => this.updateUsername(e.currentTarget.value, "")}
@@ -579,18 +610,25 @@ class LoginPanel extends React.Component<PropTypes, LoginPanelState> {
                 onClick={this.fetchUser}
                 disabled={this.state.username == ""}
               >
-                {"Next"}
+                {t("loginPanel.next")}
               </Button>
             </Box>
           )}
-          {currentStep == "loadingUser" && <div>Loading User...</div>}
+          {currentStep == "loadingUser" && (
+            <div>{t("loginPanel.progress.loadingUser")}</div>
+          )}
           {currentStep == "typingPassword" && (
-            <Box column>
-              <Text as="label">{`Please enter the password for user '${this.state.username}'`}</Text>
+            <Form paddedRatio={2} onSubmit={_onSubmit} column>
+              <Text as="label">
+                {t("loginPanel.enterPW", {
+                  username: sanitizeHTML(this.state.username)
+                })}
+              </Text>
               <Spacing bottom={3} />
               <Input
                 dark
                 type="password"
+                autoComplete="current-password"
                 placeholder={"Password"}
                 value={this.state.password}
                 onClick={(e) => e.currentTarget.select()}
@@ -606,13 +644,13 @@ class LoginPanel extends React.Component<PropTypes, LoginPanelState> {
               >
                 {"Login"}
               </Button>
-            </Box>
+            </Form>
           )}
           {currentStep == "authenticatingPassword" && (
-            <div>Authenticating Password...</div>
+            <div>{t("loginPanel.progress.authingPW")}</div>
           )}
           {currentStep == "authenticatingDongle" && (
-            <div>Authenticating Dongle...</div>
+            <div>{t("loginPanel.progress.authingDongle")}</div>
           )}
         </Box>
       </MenuPanel>

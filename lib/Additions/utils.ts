@@ -1,37 +1,21 @@
 import { getCookie, setCookie } from "typescript-cookie";
 
 import { ViewState_Arbm as ViewState } from "../terriajsOverrides/ViewState_Arbm";
-
-interface TokenResponse {
-  token: string;
-}
+import {
+  CustomTimeoutError,
+  CustomNetworkError,
+  CustomAbortError
+} from "./custom-errors";
 
 const CSRF_COOKIE_NAME = "csrftoken";
 
 // ---------------------------------------------------------------------------------------------------
 
-export class CustomTimeoutError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = "TimeoutError";
-  }
-}
-
-export class CustomAbortError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = "AbortError";
-  }
-}
-
-export class CustomNetworkError extends Error {
-  statusCode: number;
-  constructor(statusCode: number, statusText: string) {
-    super(statusText);
-    this.name = "NetworkError";
-    this.statusCode = statusCode;
-  }
-}
+// Function to sanitize and escape HTML
+export const sanitizeHTML = (input: string): string => {
+  const doc = new DOMParser().parseFromString(input, "text/html");
+  return doc.body.textContent || "";
+};
 
 // ---------------------------------------------------------------------------------------------------
 
@@ -47,17 +31,17 @@ export async function getCsrfToken(
 
 // ---------------------------------------------------------------------------------------------------
 
-export async function fetchJsonFromAPI(
-  viewState: ViewState,
-  abortSignal: AbortSignal | null,
-  urlTail: string,
-  body: any = null,
-  method: string = "GET",
-  timeout: number = 10 * 1000, // milliseconds
-  enforceCsrf: boolean = false
-): Promise<any> {
-  debugger;
-}
+// export async function fetchJsonFromAPI(
+//   viewState: ViewState,
+//   abortSignal: AbortSignal | null,
+//   urlTail: string,
+//   body: any = null,
+//   method: string = "GET",
+//   timeout: number = 10 * 1000, // milliseconds
+//   enforceCsrf: boolean = false
+// ): Promise<any> {
+//   debugger;
+// }
 
 // ---------------------------------------------------------------------------------------------------
 
@@ -141,7 +125,7 @@ export async function fetchFromAPI(
         );
       if (errorName == "AbortError") throw new CustomAbortError("Aborted."); // this error should never be shown to the user
     }
-    throw error; // re-throw any otehr errors
+    throw error; // re-throw any other errors
   }
 
   if (!response.ok) {
