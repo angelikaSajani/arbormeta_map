@@ -1,15 +1,37 @@
 {
+  "django": {
+    "errors": {
+      "invalidResponse": "Invalid response from the Django server to {{urlTail}}:",
+      "unresponsive": "The Django server seems non-responsive. Check your internet connection and try again later.</br>If problems persist, please contact us on {{email}}."
+    }
+  },
+  "feedback": {
+    "cancelTitle": "Feedback Cancelled",
+    "timeoutTitle": "Feedback Submission Timed Out",
+    "cancelMessage": "You cancelled the submission of your feedback."
+  },
   "loginPanel": {
     "btnTitle": "Log in to view subscriber-only data",
     "btnText": "Log In",
-    "enterUsername": "Enter your Username",
+    "enterUsername": "Please enter your Username",
     "username": "Username",
-    "next": "Next"
+    "next": "Next",
+    "enterPW": "Please enter the password for user '{{username}}':",
+    "progress": {
+      "loadingUser": "Loading user..",
+      "authingPW": "Authenticating password...",
+      "authingDongle": "Authenticating dongle..."
+    },
+    "errors": {
+      "title": "Error Logging In",
+      "noSecurityKey": "You do not have any valid security keys. </br>Please contact the site administrator: {{email}}.",
+      "noKeyOrPW": "To log in you need either a password or a security key. </br>Please contact the site administrator: : {{email}}."
+    }
   },
   "logoutPanel": {
     "btnTitle": "Log out to prevent unauthorised access to subscriber-only data",
     "btnText": "Log Out",
-    "areYouSure": "Sorry to see you leave, $name. Are you sure you want to logout?"
+    "areYouSure": "Sorry to see you leave, {{name}}. Are you sure you want to logout?"
   },
   "gettingstarted": {
     "title": "Getting started with the map",

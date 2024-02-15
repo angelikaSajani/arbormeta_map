@@ -16,6 +16,7 @@ import {
 import Terria from "terriajs/lib/Models/Terria";
 import { ViewState_Arbm as ViewState } from "./ViewState_Arbm"; // AIS: user our override  < ==============
 import { fetchFromAPI } from "../Additions/utils";
+import { isNullishCoalesce } from "typescript";
 
 export default function sendFeedback(options: {
   terria: Terria;
@@ -24,7 +25,8 @@ export default function sendFeedback(options: {
   email: string;
   sendShareURL: boolean;
   comment: string;
-  viewState: ViewState; // AIS, added                              < =====================================================================================
+  viewState: ViewState; // AIS, added                  < =====================================================================================
+  signal: AbortSignal | null; // AIS, added            < =====================================================================================
   additionalParameters?: Record<string, string | undefined>;
 }) {
   if (!isDefined(options) || !isDefined(options.terria)) {
@@ -33,6 +35,7 @@ export default function sendFeedback(options: {
 
   const terria = options.terria;
   const viewState = options.viewState;
+  const signal = options.signal; // AIS, added            < =====================================================================================
 
   if (!isDefined(terria.configParameters.feedbackUrl)) {
     raiseError(terria, "`terria.configParameters.feedbackUrl` is not defined");
@@ -66,9 +69,10 @@ export default function sendFeedback(options: {
         );
       }
 
-      // AIS: using fetch instead of loadWithXhr              < =====================================================================================
+      // AIS: using fetchFromAPI instead of loadWithXhr              < =====================================================================================
       return fetchFromAPI(
         viewState,
+        signal,
         "terria/feedback_new/",
         feedbackData,
         "POST"
@@ -102,6 +106,22 @@ export default function sendFeedback(options: {
       }
     })
     .catch(function (e) {
+      // AIS: =============== >    added special cases for AbortError and TimoutError
+      if (e.name == "AbortError") {
+        terria.notificationState.addNotificationToQueue({
+          title: i18next.t("feedback.cancelTitle"),
+          message: i18next.t("feedback.cancelMessage")
+        });
+        return null; // => do not modify component state after it has unmounted
+      } else if ((e.name = "TimeoutError")) {
+        terria.notificationState.addNotificationToQueue({
+          title: i18next.t("feedback.timeoutTitle"),
+          message: i18next.t("django.errors.unresponsive", {
+            email: viewState.terria.supportEmail
+          })
+        });
+        return false;
+      }
       raiseError(terria, e);
       return false;
     });

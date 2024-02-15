@@ -58,6 +58,7 @@ class FeedbackForm extends React.Component<IProps, IState> {
     commentIsValid: false
   };
   escKeyListener: (e: any) => void;
+  abortController?: AbortController; // AIS: added    < ==================
 
   constructor(props: IProps) {
     super(props);
@@ -86,18 +87,24 @@ class FeedbackForm extends React.Component<IProps, IState> {
 
   componentDidMount() {
     window.addEventListener("keydown", this.escKeyListener, true);
-    const name = this.props.viewState.userBestName; // AIS: added    < ======================================================
-    const email = this.props.viewState.userEmail; // AIS: added    < ======================================================
-    this.setState({
-      name: name,
-      email: email,
-      commentIsValid:
-        this.props.viewState.terria.configParameters.feedbackMinLength === 0
+    runInAction(() => {
+      const name = this.props.viewState.userBestName; // AIS: added  < ======================================================
+      const email = this.props.viewState.userEmail; // AIS: added    < ======================================================
+      this.setState({
+        name: name,
+        email: email,
+        // AIS:    < ====== this was in the original constructor
+        commentIsValid:
+          this.props.viewState.terria.configParameters.feedbackMinLength === 0
+      });
     });
+    this.abortController = new AbortController(); // AIS: added    < ==================
   }
 
   componentWillUnmount() {
     window.removeEventListener("keydown", this.escKeyListener, true);
+    this.abortController?.abort(); // AIS: added    < ==================
+    this.abortController = undefined;
   }
 
   resetState() {
@@ -105,6 +112,8 @@ class FeedbackForm extends React.Component<IProps, IState> {
   }
 
   onDismiss() {
+    this.abortController?.abort(); // AIS: added    < ==================
+    this.abortController = new AbortController();
     runInAction(() => {
       this.props.viewState.feedbackFormIsVisible = false;
     });
@@ -164,9 +173,12 @@ class FeedbackForm extends React.Component<IProps, IState> {
         email: this.state.email,
         sendShareURL: this.state.sendShareURL,
         comment: this.state.comment,
-        viewState: this.props.viewState
-      })!.then((succeeded: boolean) => {
-        if (succeeded) {
+        viewState: this.props.viewState,
+        signal: this.abortController?.signal ?? null
+      })!.then((succeeded: boolean | null) => {
+        if (succeeded === null) {
+          /* was aborted by user, component has been unmounted, don't mod state */
+        } else if (succeeded) {
           this.setState({
             isSending: false,
             comment: ""
@@ -334,6 +346,7 @@ class FeedbackForm extends React.Component<IProps, IState> {
                 ? t("feedback.sending")
                 : t("feedback.send")}
             </Button>
+            <Spacing bottom={2} />
           </Box>
         </Form>
       </FormWrapper>
