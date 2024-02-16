@@ -1,0 +1,502 @@
+{
+  "catalog": [
+    {
+      "id": "Arbormeta Data",
+      "type": "group",
+      "name": "Arbormeta Datasets",
+      // "description": "Arbormeta Datasets.",
+      "sortMembersBy": "id",
+      "isOpenInWorkbench": true,
+      "isOpen": true,
+      "members": [
+        {
+          "id": "Brindingabba",
+          "type": "group",
+          "name": "Brindingabba",
+          "sortMembersBy": "id",
+          "isOpenInWorkbench": true,
+          "members": [
+            {
+              "type": "kml",
+              "name": "Brindingabba Boundary",
+              "url": "tjs/plot/Brindingabba/Brindigabba.kml",
+              "isOpenInWorkbench": false
+            },
+            {
+              "id": "brin_tls_p",
+              "type": "geojson",
+              "name": "Brindingabba TLS Sites",
+              "url": "tjs/plot/Brindingabba/Brin_TLS_poly.geojson",
+              "opacity": 0.6,
+              "styles": [
+                {
+                  "id": "fid",
+                  "color": {
+                    "nullColor": "rgba(5,225,244,1)"
+                  },
+                  "hidden": false
+                }
+              ],
+              "activeStyle": "fid",
+              "showDisableStyleOption": false,
+              "isOpenInWorkbench": false
+            },
+            {
+              "id": "brind_als",
+              "type": "open-street-map",
+              // "type":"url-template",
+              "name": "Brindingabba Cover Measured",
+              "description": "Cover Measured, >2m 0-30%",
+              "url": "http://172.24.0.2:5000/singleband/brindclip/B1?colormap=ylgn&stretch_range=[0,0.3]",
+              "show": true,
+              // "isShown": true,
+              "opacity": 1
+            },
+            {
+              "id": "brind_cc",
+              "type": "open-street-map",
+              // "type":"url-template",
+              "name": "Brindingabba Cover Prediction",
+              "description": "Cover Prediction, >2m 0-30%",
+              "url": "http://172.24.0.2:5000/singleband/brind/B1?colormap=ylgn&stretch_range=[0,0.3]",
+              "show": true
+              // "isShown": true,
+              // "opacity": 1
+            },
+            {
+              "id": "brind_ca",
+              "type": "geojson",
+              "name": "Brindingabba 10ha grid 200cm",
+              "url": "tjs/plot/Brindingabba/brindingabba_200cm_cover_prediction_10ha_cea_Grid.geojson",
+              "opacity": 0.77,
+              "styles": [
+                {
+                  "id": "_e80mape10_mean",
+                  "title": "3 class 10 Ha canopy cover %",
+                  "color": {
+                    "mapType": "bin",
+                    "minimumValue": 0.001,
+                    "numberOfBins": 3,
+                    "binMaximums": [0.0999, 0.1999, 0.6],
+                    "binColors": [
+                      "rgba(249,36,5,1)",
+                      "rgba(173,234,91,1)",
+                      "rgba(79,190,25,1)"
+                    ],
+                    "legend": {
+                      "title": "0-10% red 10-20% lime 20%+ green"
+                    }
+                  },
+                  "hidden": false
+                }
+              ],
+              "activeStyle": "_e80mape10_mean",
+              "showDisableStyleOption": false
+            },
+            {
+              "id": "brind_ca18",
+              "type": "geojson",
+              "name": "Brindingabba 10ha grid 180cm",
+              "url": "tjs/plot/Brindingabba/brind_zonalstats_180cm_2.geojson",
+              "opacity": 0.77,
+              "styles": [
+                {
+                  "id": "_180cm_mean",
+                  "title": "3 class 10 Ha canopy cover %",
+                  "color": {
+                    "mapType": "bin",
+                    "minimumValue": 0.001,
+                    "numberOfBins": 3,
+                    "binMaximums": [0.0999, 0.1999, 0.6],
+                    "binColors": [
+                      "rgba(249,36,5,1)",
+                      "rgba(173,234,91,1)",
+                      "rgba(79,190,25,1)"
+                    ],
+                    "legend": {
+                      "title": "0-10% red 10-20% lime 20%+ green"
+                    }
+                  },
+                  "hidden": false
+                }
+              ],
+              "activeStyle": "_180cm_mean",
+              "showDisableStyleOption": false
+            }
+          ]
+        },
+        {
+          "id": "MaureenJoy",
+          "type": "group",
+          "name": "MaureenJoy",
+          "sortMembersBy": "id",
+          "isOpenInWorkbench": true,
+          "members": [
+            {
+              "id": "Mau_bound",
+              "type": "kml",
+              "name": "MaureenJoy Station Boundary",
+              "url": "tjs/plot/MaureenJoy/MaureenJoy Station.kml",
+              "isOpenInWorkbench": false
+            },
+            {
+              "id": "Canopy Map TLS",
+              "type": "open-street-map",
+              // "type":"url-template",
+              "name": "MaureenJoy Canopy Map TLS",
+              "description": "Canopy, >2m TLS",
+              "url": "http://172.24.0.2:5000/singleband/mau7tls1/B1?colormap=ocean&stretch_range=[0,1.2]",
+              "show": true
+              // "isShown": true,
+              // "opacity": 1
+            },
+            {
+              "id": "mau_max",
+              "type": "open-street-map",
+              // "type":"url-template",
+              "name": "MaureenJoy Station Imagery Grey Scale",
+              "description": "Maxar 0.5m Imagery 29/09/2023",
+              "url": "http://172.24.0.2:5000/singleband/mau/B1?colormap=gray&stretch_range=[130,600]",
+              "show": true,
+              "isOpenInWorkbench": false,
+              // "isShown": true,
+              "opacity": 1
+            },
+            {
+              "id": "mau_rgb",
+              "type": "open-street-map",
+              // "type":"url-template",
+              "name": "MaureenJoy Station Imagery RGB",
+              "description": "Maxar 0.5m Imagery 29/09/2023",
+              "url": "http://172.24.0.2:5000/rgb/maurgb?r=B1&r_range=[0,255]&g=B2&g_range=[0,255]&b=B3&b_range=[0,255]",
+              "show": true,
+              "isOpenInWorkbench": false,
+              // "isShown": true,
+              "opacity": 1
+            },
+            {
+              "id": "dungmau_als",
+              "type": "open-street-map",
+              // "type":"url-template",
+              "name": "Dungarvan MaureenJoy Cover Measured",
+              "description": "Cover Measured, >2m 0-30%",
+              "url": "http://172.24.0.2:5000/singleband/dungclip/B1?colormap=ylgn&stretch_range=[0,0.3]",
+              "show": true,
+              "isOpenInWorkbench": false,
+              // "isShown": true,
+              "opacity": 1
+            },
+            {
+              "id": "mau_cc",
+              "type": "open-street-map",
+              // "type":"url-template",
+              "name": "MaureenJoy Station Cover Prediction",
+              "description": "Cover Prediction, >2m 0-30%",
+              "url": "http://172.24.0.2:5000/singleband/maureen/B1?colormap=ylgn&stretch_range=[0,0.3]",
+              "show": true
+              // "isShown": true,
+              // "opacity": 1
+            },
+            {
+              "id": "mau_ca",
+              "type": "geojson",
+              "name": "MaureenJoy 10ha grid 200cm",
+              "url": "tjs/plot/MaureenJoy/maureenjoy_200cm_cover_prediction_10ha_cea_Grid.geojson",
+              "opacity": 0.77,
+              "styles": [
+                {
+                  "id": "_e80mape10_mean",
+                  "title": "3 class 10 Ha canopy cover %",
+                  "color": {
+                    "mapType": "bin",
+                    "minimumValue": 0.001,
+                    "numberOfBins": 3,
+                    "binMaximums": [0.0999, 0.1999, 0.6],
+                    "binColors": [
+                      "rgba(249,36,5,1)",
+                      "rgba(173,234,91,1)",
+                      "rgba(79,190,25,1)"
+                    ],
+                    "legend": {
+                      "title": "0-10% red 10-20% lime 20%+ green"
+                    }
+                  },
+                  "hidden": false
+                }
+              ],
+              "activeStyle": "_e80mape10_mean",
+              "showDisableStyleOption": false
+            },
+            {
+              "id": "mau_ca18",
+              // "isEnabled": false,
+              "type": "geojson",
+              "name": "MaureenJoy 10ha grid  180cm",
+              "url": "tjs/plot/MaureenJoy/maur_zonalstats_180cm.geojson",
+              "opacity": 0.77,
+              "styles": [
+                {
+                  "id": "_180cm_mean",
+                  "title": "3 class 10 Ha canopy cover %",
+                  "color": {
+                    "mapType": "bin",
+                    "minimumValue": 0.001,
+                    "numberOfBins": 3,
+                    "binMaximums": [0.0999, 0.1999, 0.6],
+                    "binColors": [
+                      "rgba(249,36,5,1)",
+                      "rgba(173,234,91,1)",
+                      "rgba(79,190,25,1)"
+                    ],
+                    "legend": {
+                      "title": "0-10% red 10-20% lime 20%+ green"
+                    }
+                  },
+                  "hidden": false
+                }
+              ],
+              "activeStyle": "_180cm_mean",
+              "showDisableStyleOption": false
+            }
+          ]
+        },
+        {
+          "id": "Dungarvan",
+          "type": "group",
+          "name": "Dungarvan",
+          "sortMembersBy": "id",
+          "isOpenInWorkbench": true,
+          "members": [
+            {
+              "type": "kml",
+              "name": "Dungarvan Boundary",
+              "url": "tjs/plot/Dungarvan/Dungarvan.kml",
+              "isOpenInWorkbench": false
+            },
+            {
+              "id": "dung_tls",
+              "type": "geojson",
+              "name": "Dungarvan TLS Sites",
+              "url": "tjs/plot/Dungarvan/Dung_TLS_poly.geojson",
+              "opacity": 0.6,
+              "styles": [
+                {
+                  "id": "fid",
+                  "color": {
+                    "nullColor": "rgba(5,225,244,1)"
+                  },
+                  "hidden": false
+                }
+              ],
+              "activeStyle": "fid",
+              "showDisableStyleOption": false,
+              "isOpenInWorkbench": false
+            },
+            {
+              "id": "dungmau_als",
+              "type": "open-street-map",
+              // "type":"url-template",
+              "name": "Dungarvan MaureenJoy Cover Measured",
+              "description": "Cover Measured, >2m 0-30%",
+              "url": "http://172.24.0.2:5000/singleband/dungclip/B1?colormap=ylgn&stretch_range=[0,0.3]",
+              "show": true,
+              // "isShown": true,
+              "opacity": 1
+            },
+            {
+              "id": "dung_cc",
+              "type": "open-street-map",
+              // "type":"url-template",
+              "name": "Dungarvan Cover Prediction",
+              "description": "Cover Prediction, >2m 0-30%",
+              "url": "http://172.24.0.2:5000/singleband/dungarven/B1?colormap=ylgn&stretch_range=[0,0.3]",
+              "show": true
+              // "isShown": true,
+              // "opacity": 1
+            },
+            {
+              "id": "dung_ca",
+              "type": "geojson",
+              "name": "Dungarvan 10ha grid 200cm",
+              "url": "tjs/plot/Dungarvan/dungarven_200cm_cover_prediction_10ha_cea_Grid.geojson",
+              "opacity": 0.77,
+              "styles": [
+                {
+                  "id": "_e80mape10_mean",
+                  "title": "3 class 10 Ha canopy cover %",
+                  "color": {
+                    "mapType": "bin",
+                    "minimumValue": 0.001,
+                    "numberOfBins": 3,
+                    "binMaximums": [0.0999, 0.1999, 0.6],
+                    "binColors": [
+                      "rgba(249,36,5,1)",
+                      "rgba(173,234,91,1)",
+                      "rgba(79,190,25,1)"
+                    ],
+                    "legend": {
+                      "title": "0-10% red 10-20% lime 20%+ green"
+                    }
+                  },
+                  "hidden": false
+                }
+              ],
+              "activeStyle": "_e80mape10_mean",
+              "showDisableStyleOption": false
+            },
+            {
+              "id": "dung_ca18",
+              "type": "geojson",
+              "name": "Dungarvan 10ha grid 180cm",
+              "url": "tjs/plot/Dungarvan/dung_zonalstats_180cm.geojson",
+              "opacity": 0.77,
+              "styles": [
+                {
+                  "id": "_180cm_mean",
+                  "title": "3 class 10 Ha canopy cover %",
+                  "color": {
+                    "mapType": "bin",
+                    "minimumValue": 0.001,
+                    "numberOfBins": 3,
+                    "binMaximums": [0.0999, 0.1999, 0.6],
+                    "binColors": [
+                      "rgba(249,36,5,1)",
+                      "rgba(173,234,91,1)",
+                      "rgba(79,190,25,1)"
+                    ],
+                    "legend": {
+                      "title": "0-10% red 10-20% lime 20%+ green"
+                    }
+                  },
+                  "hidden": false
+                }
+              ],
+              "activeStyle": "_180cm_mean",
+              "showDisableStyleOption": false
+            }
+          ]
+        },
+        {
+          "id": "6_NFSWVD 21",
+          "type": "group",
+          "name": "NFSWVD 21",
+          "sortMembersBy": "name",
+          "isOpenInWorkbench": true,
+          "members": [
+            {
+              "id": "brind_nfs",
+              "type": "geojson",
+              "name": "Brindingabba NFSWVD 21",
+              "url": "tjs/plot/6_NFSWVD 21/Brindigabba_Woody21_Polygon.geojson",
+              "columns": [
+                {
+                  "name": "Woody Cover (NFSWV)",
+                  "type": "enum"
+                }
+              ],
+              "styles": [
+                {
+                  "id": "Woody Cover (NFSWV)",
+                  "color": {
+                    "binColors": [],
+                    "enumColors": [
+                      {
+                        "value": "Sparse woody vegetation",
+                        "color": "rgba(202,235,188,1)"
+                      },
+                      {
+                        "value": "Woody vegetation (forest)",
+                        "color": "rgba(22,125,5,1)"
+                      },
+                      {
+                        "value": "Non-woody",
+                        "color": "rgba(248,205,94,1)"
+                      }
+                    ],
+                    "colorPalette": "Category10"
+                  },
+                  "hidden": false
+                }
+              ],
+              "showDisableStyleOption": false
+            },
+            {
+              "id": "mau_nfs",
+              "type": "geojson",
+              "name": "MaureenJoy Station NFSWVD 21",
+              "url": "tjs/plot/6_NFSWVD 21/MaureenJoyStation_Woody21_Polygon.geojson",
+              "columns": [
+                {
+                  "name": "Woody Cover (NFSWV)",
+                  "type": "enum"
+                }
+              ],
+              "styles": [
+                {
+                  "id": "Woody Cover (NFSWV)",
+                  "color": {
+                    "binColors": [],
+                    "enumColors": [
+                      {
+                        "value": "Sparse woody vegetation",
+                        "color": "rgba(202,235,188,1)"
+                      },
+                      {
+                        "value": "Woody vegetation (forest)",
+                        "color": "rgba(22,125,5,1)"
+                      },
+                      {
+                        "value": "Non-woody",
+                        "color": "rgba(248,205,94,1)"
+                      }
+                    ],
+                    "colorPalette": "Category10"
+                  },
+                  "hidden": false
+                }
+              ],
+              "showDisableStyleOption": false
+            },
+            {
+              "id": "dung_nfs",
+              "type": "geojson",
+              "name": "Dungarvan NFSWVD 21",
+              "url": "tjs/plot/6_NFSWVD 21/Dungarvan_Woody21_Polygon.geojson",
+              "columns": [
+                {
+                  "name": "Woody Cover (NFSWV)",
+                  "type": "enum"
+                }
+              ],
+              "styles": [
+                {
+                  "id": "Woody Cover (NFSWV)",
+                  "color": {
+                    "binColors": [],
+                    "enumColors": [
+                      {
+                        "value": "Sparse woody vegetation",
+                        "color": "rgba(202,235,188,1)"
+                      },
+                      {
+                        "value": "Woody vegetation (forest)",
+                        "color": "rgba(22,125,5,1)"
+                      },
+                      {
+                        "value": "Non-woody",
+                        "color": "rgba(248,205,94,1)"
+                      }
+                    ],
+                    "colorPalette": "Category10"
+                  },
+                  "hidden": false
+                }
+              ],
+              "showDisableStyleOption": false
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
