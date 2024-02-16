@@ -26,6 +26,7 @@ import plugins from "./plugins";
 // the code in the registerCatalogMembers function here instead.
 // registerCatalogMembers();
 // registerAnalytics();
+// Test change
 
 // we check exact match for development to reduce chances that production flag isn't set on builds(?)
 if (process.env.NODE_ENV === "development") {
