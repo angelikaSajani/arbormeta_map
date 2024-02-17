@@ -13,8 +13,8 @@ import MenuPanel from "terriajs/lib/ReactViews/StandardUserInterface/customizabl
 import Spacing from "terriajs/lib/Styled/Spacing";
 
 import { ViewState_Arbm as ViewState } from "../../terriajsOverrides/ViewState_Arbm";
-import { fetchFromAPI } from "../utils";
-import { EncodingUtilities } from "../EncodingUtilities";
+import EncodingUtilities from "../EncodingUtilities";
+import DjangoComms from "../DjangoComms";
 
 import Styles from "./logout-panel.scss";
 
@@ -70,7 +70,7 @@ class LogoutPanel extends React.Component<PropTypes, LogoutPanelState> {
     this.setState({ waiting: true });
     const signal = this.abortController?.signal ?? null;
     try {
-      const _ = await fetchFromAPI(
+      const _ = await DjangoComms.fetchFromAPI(
         this.props.viewState,
         signal,
         "auth/logout/session/",
