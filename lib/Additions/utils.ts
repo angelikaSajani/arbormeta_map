@@ -11,14 +11,6 @@ const CSRF_COOKIE_NAME = "csrftoken";
 
 // ---------------------------------------------------------------------------------------------------
 
-// Function to sanitize and escape HTML
-export const sanitizeHTML = (input: string): string => {
-  const doc = new DOMParser().parseFromString(input, "text/html");
-  return doc.body.textContent || "";
-};
-
-// ---------------------------------------------------------------------------------------------------
-
 export async function getCsrfToken(
   viewState: ViewState,
   signal: AbortSignal | null

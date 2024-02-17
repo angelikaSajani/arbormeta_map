@@ -13,7 +13,8 @@ import MenuPanel from "terriajs/lib/ReactViews/StandardUserInterface/customizabl
 import Spacing from "terriajs/lib/Styled/Spacing";
 
 import { ViewState_Arbm as ViewState } from "../../terriajsOverrides/ViewState_Arbm";
-import { fetchFromAPI, sanitizeHTML } from "../utils";
+import { fetchFromAPI } from "../utils";
+import { EncodingUtilities } from "../EncodingUtilities";
 
 import Styles from "./logout-panel.scss";
 
@@ -171,7 +172,9 @@ class LogoutPanel extends React.Component<PropTypes, LogoutPanelState> {
             <Box padded column>
               <Spacing bottom={3} />
               <Text bold as="label">
-                {t("logoutPanel.areYouSure", { name: sanitizeHTML(name) })}
+                {t("logoutPanel.areYouSure", {
+                  name: EncodingUtilities.sanitizeHTML(name)
+                })}
               </Text>
               <Spacing bottom={3} />
               <LogoutButton onLogoutClick={this.onLogoutClick} t={t} />

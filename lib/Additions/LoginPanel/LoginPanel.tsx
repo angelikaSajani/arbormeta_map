@@ -13,7 +13,7 @@ import withTerriaRef from "terriajs/lib/ReactViews/HOCs/withTerriaRef";
 import MenuPanel from "terriajs/lib/ReactViews/StandardUserInterface/customizable/MenuPanel";
 import Styles from "./login-panel.scss";
 import { DisplayError } from "../custom-errors";
-import { sanitizeHTML } from "../utils";
+import { EncodingUtilities } from "../EncodingUtilities";
 
 import {
   ViewState_Arbm as ViewState,
@@ -21,14 +21,6 @@ import {
 } from "../../terriajsOverrides/ViewState_Arbm";
 
 import { fetchFromAPI } from "../utils";
-
-import {
-  base64_decode_urlsafe,
-  base64_encode_arrayBuffer_urlsafe,
-  arrayBufferToString,
-  base64_encode_arrayBuffer,
-  arraysAreEqual
-} from "./utils";
 
 type Modus = "typing" | "loading";
 type LoginStep =
@@ -319,9 +311,11 @@ class LoginPanel extends React.Component<PropTypes, LoginPanelState> {
                 })
               );
             }
-            parms.challenge = base64_decode_urlsafe(parms.challenge).buffer;
+            parms.challenge = EncodingUtilities.base64_decode_urlsafe(
+              parms.challenge
+            ).buffer;
             for (let allowed of parms.allowCredentials) {
-              allowed.id = base64_decode_urlsafe(allowed.id);
+              allowed.id = EncodingUtilities.base64_decode_urlsafe(allowed.id);
             }
           }
           this.storeAuthData(data);
@@ -390,14 +384,16 @@ class LoginPanel extends React.Component<PropTypes, LoginPanelState> {
     let assertationResponse: AuthenticatorAssertionResponse =
       credentials.response as AuthenticatorAssertionResponse;
     let clientData = JSON.parse(
-      arrayBufferToString(assertationResponse.clientDataJSON)
+      EncodingUtilities.arrayBufferToString(assertationResponse.clientDataJSON)
     );
 
     let expectedChallenge = new Uint8Array(parameters.challenge as ArrayBuffer); // parameters.challenge is a buffer
     let receivedChallenge = new Uint8Array(
-      base64_decode_urlsafe(clientData.challenge)
+      EncodingUtilities.base64_decode_urlsafe(clientData.challenge)
     );
-    if (!arraysAreEqual(expectedChallenge, receivedChallenge)) {
+    if (
+      !EncodingUtilities.arraysAreEqual(expectedChallenge, receivedChallenge)
+    ) {
       throw new Error("Received invalid credentials - wrong challenge.");
     }
 
@@ -410,20 +406,22 @@ class LoginPanel extends React.Component<PropTypes, LoginPanelState> {
         id: credentials.id, // already urlsafe_base64 encoded
         rawId: credentials.id, // redundant, but required syntactically
         response: {
-          authenticatorData: base64_encode_arrayBuffer(
+          authenticatorData: EncodingUtilities.base64_encode_arrayBuffer(
             assertationResponse.authenticatorData
           ),
-          clientDataJSON: base64_encode_arrayBuffer(
+          clientDataJSON: EncodingUtilities.base64_encode_arrayBuffer(
             assertationResponse.clientDataJSON
           ),
-          signature: base64_encode_arrayBuffer(assertationResponse.signature!)
+          signature: EncodingUtilities.base64_encode_arrayBuffer(
+            assertationResponse.signature!
+          )
         },
         type: credentials.type,
         authenticatorAttachment: credentials.authenticatorAttachment,
         clientExtensionResults: credentials.getClientExtensionResults()
       },
       id: credentials.id, // already urlsafe_base64 encoded
-      expected_challenge: base64_encode_arrayBuffer_urlsafe(
+      expected_challenge: EncodingUtilities.base64_encode_arrayBuffer_urlsafe(
         parameters.challenge as ArrayBuffer
       ),
       expected_rp_id: window.location.hostname, // server will also check this against constant BASE_URL
@@ -621,7 +619,7 @@ class LoginPanel extends React.Component<PropTypes, LoginPanelState> {
             <Form paddedRatio={2} onSubmit={_onSubmit} column>
               <Text as="label">
                 {t("loginPanel.enterPW", {
-                  username: sanitizeHTML(this.state.username)
+                  username: EncodingUtilities.sanitizeHTML(this.state.username)
                 })}
               </Text>
               <Spacing bottom={3} />
