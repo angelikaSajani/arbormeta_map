@@ -68,11 +68,14 @@ const Form = styled(Box).attrs({
 class LoginPanel extends React.Component<PropTypes, LoginPanelState> {
   keyListener: (e: any) => void;
   abortController?: AbortController;
+  baseURL: string;
 
   // ---------------------------------------------------------------------------------------------------
 
   constructor(props: PropTypes) {
     super(props);
+
+    this.baseURL = props.viewState.treesAppUrl!;
 
     this.keyListener = (e) => {
       if (e.key === "Escape") {
@@ -244,9 +247,14 @@ class LoginPanel extends React.Component<PropTypes, LoginPanelState> {
     this.updateModus("loading", "");
 
     const { viewState } = this.props;
-    const signal = this.abortController?.signal ?? null;
+    const abortSignal = this.abortController?.signal ?? null;
 
-    return LoginManager.getUserInfo(this.state.username, viewState, signal)
+    return LoginManager.getUserInfo(
+      this.state.username,
+      viewState.terria.supportEmail,
+      this.baseURL,
+      abortSignal
+    )
       .then((data) => {
         this.storeAuthData(data);
         if (data.userInfo.hasAuthenticators) {
@@ -350,7 +358,7 @@ class LoginPanel extends React.Component<PropTypes, LoginPanelState> {
     try {
       // send a auth/login request to Django
       const loginData = await LoginManager.sendLoginRequest(
-        viewState,
+        this.baseURL,
         abortSignal,
         credentials
       );

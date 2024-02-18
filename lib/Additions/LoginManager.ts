@@ -1,9 +1,6 @@
 import { t } from "i18next";
 
-import {
-  ViewState_Arbm as ViewState,
-  LoginData
-} from "../terriajsOverrides/ViewState_Arbm";
+import { LoginData } from "../terriajsOverrides/ViewState_Arbm";
 import DjangoComms from "./DjangoComms";
 import EncodingUtilities from "./EncodingUtilities";
 import {
@@ -68,7 +65,7 @@ interface BrowserVerificationResults {
  *
  * Either `viaDongle` or `viaPassword` must be populated.
  */
-interface LoginCredentials {
+export interface LoginCredentials {
   username: string;
   viaDongle?: BrowserVerificationResults;
   viaPassword?: string; // populate with password
@@ -99,8 +96,9 @@ export default class LoginManager {
   /**
    * Fetch the data (from the Django server) required to log a particula user in.
    * @param username - string
-   * @param viewState - {@link ViewState}
-   * @param signal - pass a {@link AbortSignal} if the request should be abortable, otherwise null
+   * @param supportEmail - string
+   * @param baseURL - base URL for Django API, MUST end with a slash
+   * @param abortSignal - pass a {@link AbortSignal} if the request should be abortable, otherwise null
    * @returns a Promise returning {@link AuthData}, the data required to log a user in either via password or dongle
    * May throw:
    * - {@link CustomAuthenticationError} if the user is either not found, or does not have any credentials to login.
@@ -109,17 +107,17 @@ export default class LoginManager {
    */
   public static getUserInfo = async (
     username: string,
-    viewState: ViewState,
-    signal: AbortSignal | null
+    supportEmail: string,
+    baseURL: string,
+    abortSignal: AbortSignal | null
   ): Promise<AuthData> => {
     const urlTail = `accounts/authenticator_opts/get/${username}/`;
     return DjangoComms.fetchJsonFromAPI(
-      viewState,
-      signal,
+      baseURL,
       urlTail,
       ["userInfo", "parameters"],
       null,
-      "OPTIONS"
+      { method: "OPTIONS", abortSignal }
     )
       .then((data) => {
         const userInfo = data.userInfo;
@@ -131,7 +129,7 @@ export default class LoginManager {
 
         // Normal case...
         if (userInfo.hasAuthenticators) {
-          transformAuthData(data, viewState.terria.supportEmail);
+          transformAuthData(data, supportEmail);
         }
         return data as AuthData;
       })
@@ -189,28 +187,34 @@ export default class LoginManager {
   // sendLoginRequest
   // ================================================================================
 
+  /**
+   * Sends a log in request to the Django-servers api endpoint and returns
+   * all relevant data about the user (name, email, flags, permissins)
+   * and a session ID for creating a session cookie.
+   * @param baseURL - the base url for the Django-server's API endpoint
+   * @param abortSignal - optional (@link AbortSignal) if request should be abortable
+   * @param credentials - username and either password or verified authenticator (dongle) data
+   */
   public static sendLoginRequest = async (
-    viewState: ViewState,
-    signal: AbortSignal | null,
+    baseURL: string,
+    abortSignal: AbortSignal | null,
     credentials: LoginCredentials
   ): Promise<LoginData> => {
     const loginRequestBody: LoginRequestBody = {
       username: credentials.username
     };
     if (credentials.viaDongle) {
-      debugger;
       loginRequestBody.digest = JSON.stringify(credentials.viaDongle);
       loginRequestBody.authenticator_id = credentials.viaDongle.id;
     } else {
       loginRequestBody!.password = credentials.viaPassword!;
     }
     return DjangoComms.fetchJsonFromAPI(
-      viewState,
-      signal,
+      baseURL,
       "auth/login/session/",
       ["user", "sessionid"],
       loginRequestBody,
-      "POST"
+      { method: "POST", abortSignal }
     );
   };
 
@@ -282,6 +286,9 @@ export default class LoginManager {
 // ================================================================================
 // transformAuthData
 // ================================================================================
+
+// NOTE: moved `transformAuthData` outside of the class,
+//       as its declaration as a private static member caused compiler problems
 
 /** Transforms (in place!) the {@link AuthData} from the format in which we receive it from the Django server
  * to the format we need to actually authenticate the user via the dongle.

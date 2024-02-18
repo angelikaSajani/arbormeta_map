@@ -15,8 +15,7 @@ import {
 
 import Terria from "terriajs/lib/Models/Terria";
 import { ViewState_Arbm as ViewState } from "./ViewState_Arbm"; // AIS: user our override  < ==============
-import { fetchFromAPI } from "../Additions/utils";
-import { isNullishCoalesce } from "typescript";
+import DjangoComms from "../Additions/DjangoComms";
 
 export default function sendFeedback(options: {
   terria: Terria;
@@ -26,7 +25,7 @@ export default function sendFeedback(options: {
   sendShareURL: boolean;
   comment: string;
   viewState: ViewState; // AIS, added                  < =====================================================================================
-  signal: AbortSignal | null; // AIS, added            < =====================================================================================
+  abortSignal: AbortSignal | null; // AIS, added            < =====================================================================================
   additionalParameters?: Record<string, string | undefined>;
 }) {
   if (!isDefined(options) || !isDefined(options.terria)) {
@@ -35,7 +34,7 @@ export default function sendFeedback(options: {
 
   const terria = options.terria;
   const viewState = options.viewState;
-  const signal = options.signal; // AIS, added            < =====================================================================================
+  const abortSignal = options.abortSignal; // AIS, added            < =====================================================================================
 
   if (!isDefined(terria.configParameters.feedbackUrl)) {
     raiseError(terria, "`terria.configParameters.feedbackUrl` is not defined");
@@ -70,12 +69,11 @@ export default function sendFeedback(options: {
       }
 
       // AIS: using fetchFromAPI instead of loadWithXhr              < =====================================================================================
-      return fetchFromAPI(
-        viewState,
-        signal,
+      return DjangoComms.fetchFromAPI(
+        viewState.treesAppUrl,
         "terria/feedback_new/",
         feedbackData,
-        "POST"
+        { abortSignal, method: "POST" }
       );
     })
     .then(function (json) {

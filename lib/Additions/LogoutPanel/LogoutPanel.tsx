@@ -46,11 +46,14 @@ class LogoutPanel extends React.Component<PropTypes, LogoutPanelState> {
 
   keyListener: (e: any) => void;
   abortController?: AbortController;
+  baseURL: string;
 
   // ---------------------------------------------------------------------------------------------------
 
   constructor(props: PropTypes) {
     super(props);
+
+    this.baseURL = props.viewState.treesAppUrl!;
 
     this.keyListener = (e) => {
       if (e.key === "Escape") {
@@ -68,14 +71,13 @@ class LogoutPanel extends React.Component<PropTypes, LogoutPanelState> {
 
   onLogoutClick = async () => {
     this.setState({ waiting: true });
-    const signal = this.abortController?.signal ?? null;
+    const abortSignal = this.abortController?.signal ?? null;
     try {
       const _ = await DjangoComms.fetchFromAPI(
-        this.props.viewState,
-        signal,
+        this.baseURL,
         "auth/logout/session/",
         {},
-        "POST"
+        { abortSignal, method: "POST" }
       );
     } catch (error) {
       if (error.name && error.name !== "AbortError") {
