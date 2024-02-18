@@ -13,31 +13,49 @@ import {
 } from "./custom-errors";
 
 /**
- * The data returned by the Django REST api in response to sending the username
- * containing all the information required to either authenticate either
- * -  by username + password
- * -  by username and authenticator (FIDO2 security key, aka colloquially 'dongle')
+ * We receive a list of these when retrieving {@link AuthParameters} for a user.
+ * By limiting the dongles the user can use to one of these, we effectively prevent the user
+ * from creating their own dongles.
  */
-
 interface DongleCredential {
   id: string | Uint8Array; // we receive the ids from Django as base64 encoded, urlsafe strings but require them as Uint8Array
   type: any;
   transport: any;
 }
 
+/**
+ * The data returned by the Django REST api in response to sending the username
+ * containing all the information required to either authenticate either
+ * -  by username + password
+ * -  by username and authenticator (FIDO2 security key, aka colloquially 'dongle')
+ */
 interface AuthParameters {
   challenge: string | ArrayBuffer; // string when we receive it from Django, must be b64 decoded and converted to ArrayBuffer before using
   timeout: number;
   rpId: string;
-  allowCredentials: DongleCredential[] | []; // Permitted dongles, each will contain 'id', 'type' and 'transport', 'id' must be b64 decoded to Uint8Array before using
+  allowCredentials: DongleCredential[] | []; // Permitted dongles, by using these, user cannot create their own dongle
   userVerification: string;
 }
 
+/** Keeps track of whether user has password and or any authenticators (aka dongles).
+ *
+ * Business logic: users who have any authenticators (even if no longer active)
+ * never can log in via password.
+ */
 interface AuthUserInfo {
   hasAuthenticators: boolean;
   hasPassword: boolean;
 }
 
+/** Data about a particular user required while logging in */
+export interface AuthData {
+  parameters: AuthParameters;
+  userInfo: AuthUserInfo;
+}
+
+/** Data returned after the authenticator is verified using the browser, that is:
+ * the user inserts the dongle if necessary, enters the pin, and touches it.
+ */
 interface BrowserVerificationResults {
   credentials: object;
   id: string;
@@ -46,10 +64,14 @@ interface BrowserVerificationResults {
   expected_origin: string;
 }
 
+/** Data required to attempt to log into the Django server.
+ *
+ * Either `viaDongle` or `viaPassword` must be populated.
+ */
 interface LoginCredentials {
   username: string;
   viaDongle?: BrowserVerificationResults;
-  viaPassword?: string;
+  viaPassword?: string; // populate with password
 }
 
 /** body of the body of an API request to Django to login:
@@ -64,19 +86,6 @@ interface LoginRequestBody {
   password?: string;
   digest?: string;
   authenticator_id?: string;
-}
-
-interface LoginRequestResult {
-  user: object;
-  sessionid;
-  string;
-  digest?: string;
-  authenticator_id?: string;
-}
-/** Data about a particular user required while logging in */
-export interface AuthData {
-  parameters: AuthParameters;
-  userInfo: AuthUserInfo;
 }
 
 /** Collection of utilities to facility loggin in and out of
@@ -122,7 +131,7 @@ export default class LoginManager {
 
         // Normal case...
         if (userInfo.hasAuthenticators) {
-          LoginManager.transformAuthData(data, viewState.terria.supportEmail);
+          transformAuthData(data, viewState.terria.supportEmail);
         }
         return data as AuthData;
       })
@@ -140,38 +149,74 @@ export default class LoginManager {
   };
 
   // ================================================================================
-  // transformAuthData
+  // verifyDongleByBrowser
   // ================================================================================
 
-  /** Transforms (in place!) the {@link AuthData} from the format in which we receive it from the Django server
-   * to the format we need to actually authenticate the user via the dongle.
-   * @param authData - {@link AuthData} as we received them from Django (everything is text based)
-   * @param supportEmail - string: used to construct an error message that contains a link to customer support
+  /**
+   * Takes the AuthData as they have been received from Django (using LoginManager.getUserInfo()),
+   * then prompts the user to authenticate the Dongle and returns the result to the caller
+   * ### First step (done by the browser):
+   *  - let the browser ask the user to use the security key (insert it if necessary, enter pin, then touch it)
+   * - this will return null if the user fails to do so, clicks cancel, or the whole process times out
+   * ### Second step (our own logic):
+   * - check that the result is valid for the challenge we passed.
+   *
+   * **NOTE**: The data also need to be verified by the Django Server, this will happen in the /auth/login request.
+   *
+   * @param authData - {@link AuthData}
+   * @returns a {@link Promise} returning {@link BrowserVerificationResults}, or `null` if user cancels or lets the dialog time out
    */
-  private static transformAuthData = (
-    authData: AuthData,
-    supportEmail: string
-  ): void => {
-    // convert the parameters to the format we need to authenticate
-    const parms: AuthParameters = authData.parameters;
-    if (parms.allowCredentials.length === 0) {
-      throw new DisplayError(
-        t("loginPanel.errors.noSecurityKey", {
-          email: supportEmail
-        })
-      );
-    }
-    parms.challenge = EncodingUtilities.base64_decode_urlsafe(
-      parms.challenge as string
-    ).buffer;
-    for (let allowed of parms.allowCredentials) {
-      allowed.id = EncodingUtilities.base64_decode_urlsafe(
-        allowed.id as string
-      );
+  public static verifyDongleByBrowser = async (
+    authData: AuthData
+  ): Promise<BrowserVerificationResults | null> => {
+    // As a third step (later, when trying to login) the server will also verify the credentials)
+    try {
+      const credentials: Credential | null = await navigator.credentials.get({
+        publicKey: authData.parameters as PublicKeyCredentialRequestOptions
+      });
+      return credentials == null
+        ? null
+        : LoginManager.verifyExistingCredentialsAgainstChallenge(
+            credentials as PublicKeyCredential,
+            authData.parameters
+          );
+    } catch (error) {
+      return null;
     }
   };
 
-  // ---------------------------------------------------------------------------------------------------
+  // ================================================================================
+  // sendLoginRequest
+  // ================================================================================
+
+  public static sendLoginRequest = async (
+    viewState: ViewState,
+    signal: AbortSignal | null,
+    credentials: LoginCredentials
+  ): Promise<LoginData> => {
+    const loginRequestBody: LoginRequestBody = {
+      username: credentials.username
+    };
+    if (credentials.viaDongle) {
+      debugger;
+      loginRequestBody.digest = JSON.stringify(credentials.viaDongle);
+      loginRequestBody.authenticator_id = credentials.viaDongle.id;
+    } else {
+      loginRequestBody!.password = credentials.viaPassword!;
+    }
+    return DjangoComms.fetchJsonFromAPI(
+      viewState,
+      signal,
+      "auth/login/session/",
+      ["user", "sessionid"],
+      loginRequestBody,
+      "POST"
+    );
+  };
+
+  // ================================================================================
+  // verifyExistingCredentialsAgainstChallenge
+  // ================================================================================
 
   private static verifyExistingCredentialsAgainstChallenge = (
     credentials: PublicKeyCredential,
@@ -232,70 +277,31 @@ export default class LoginManager {
       expected_origin: window.location.protocol + "//" + window.location.host
     };
   };
+} // end of class
 
-  // ================================================================================
-  // verifyDongleByBrowser
-  // ================================================================================
+// ================================================================================
+// transformAuthData
+// ================================================================================
 
-  /**
-   * Takes the AuthData as they have been received from Django (using LoginManager.getUserInfo()),
-   * then prompts the user to authenticate the Dongle and returns the result to the caller
-   * ### First step (done by the browser):
-   *  - let the browser ask the user to use the security key (insert it if necessary, enter pin, then touch it)
-   * - this will return null if the user fails to do so, clicks cancel, or the whole process times out
-   * ### Second step (our own logic):
-   * - check that the result is valid for the challenge we passed.
-   *
-   * **NOTE**: The data also need to be verified by the Django Server, this will happen in the /auth/login request.
-   *
-   * @param authData - {@link AuthData}
-   * @returns a {@link Promise} returning {@link BrowserVerificationResults}, or `null` if user cancels or lets the dialog time out
-   */
-  public static verifyDongleByBrowser = async (
-    authData: AuthData
-  ): Promise<BrowserVerificationResults | null> => {
-    // As a third step (later, when trying to login) the server will also verify the credentials)
-    try {
-      const credentials: Credential | null = await navigator.credentials.get({
-        publicKey: authData.parameters as PublicKeyCredentialRequestOptions
-      });
-      return credentials == null
-        ? null
-        : LoginManager.verifyExistingCredentialsAgainstChallenge(
-            credentials as PublicKeyCredential,
-            authData.parameters
-          );
-    } catch (error) {
-      return null;
-    }
-  };
-
-  // ================================================================================
-  // sendLoginRequest
-  // ================================================================================
-
-  public static sendLoginRequest = async (
-    viewState: ViewState,
-    signal: AbortSignal | null,
-    credentials: LoginCredentials
-  ): Promise<LoginData> => {
-    const loginRequestBody: LoginRequestBody = {
-      username: credentials.username
-    };
-    if (credentials.viaDongle) {
-      debugger;
-      loginRequestBody.digest = JSON.stringify(credentials.viaDongle);
-      loginRequestBody.authenticator_id = credentials.viaDongle.id;
-    } else {
-      loginRequestBody.password = credentials.viaPassword!;
-    }
-    return DjangoComms.fetchJsonFromAPI(
-      viewState,
-      signal,
-      "auth/login/session/",
-      ["user", "sessionid"],
-      loginRequestBody,
-      "POST"
+/** Transforms (in place!) the {@link AuthData} from the format in which we receive it from the Django server
+ * to the format we need to actually authenticate the user via the dongle.
+ * @param authData - {@link AuthData} as we received them from Django (everything is text based)
+ * @param supportEmail - string: used to construct an error message that contains a link to customer support
+ */
+const transformAuthData = (authData: AuthData, supportEmail: string): void => {
+  // convert the parameters to the format we need to authenticate
+  const parms: AuthParameters = authData.parameters;
+  if (parms.allowCredentials.length === 0) {
+    throw new DisplayError(
+      t("loginPanel.errors.noSecurityKey", {
+        email: supportEmail
+      })
     );
-  };
-}
+  }
+  parms.challenge = EncodingUtilities.base64_decode_urlsafe(
+    parms.challenge as string
+  ).buffer;
+  for (let allowed of parms.allowCredentials) {
+    allowed.id = EncodingUtilities.base64_decode_urlsafe(allowed.id as string);
+  }
+};
