@@ -6,6 +6,15 @@
   // "splitPosition": 0.5,
   "catalog": [
     {
+      "id": "ArbormetaData",
+      "name": "Arbormeta Datasets",
+      "type": "terria-reference",
+      "isGroup": true,
+      "url": "http://127.0.0.1:8043/api/v1/terria/catalog.json",
+      "shareKeys": ["Root Group/Arbormeta Datasets"]
+    },
+
+    {
       "id": "Root Group/National Data Sets",
       "type": "group",
       "name": "National Datasets",

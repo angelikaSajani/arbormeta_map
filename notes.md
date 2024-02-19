@@ -25,17 +25,25 @@ But, we may want to introduce our own subclass of `CatalogGroup`, analogous to i
 
 - [ ] Implement and register a SearchProvider subclass that lets us search data in an Arbormeta group intelligently (ie. search the database rather than the downloaded files whereever possible.)
 
-# Auto Login
+# Auto Login - NOT POSSIBLE
 
-- [ ] Store username in LocalStorage, initially only if they have a dongle
-- [ ] Isolate functionality in LoginManager as much as possible (extract from LoginPanel)
+_<mark>Not possible to log in BEFORE the catalog is loaded</mark>, because the React environment does not exist at that stage._
+
+BUT:
+
+- [ ] remove session cookie and csrf cookie on startup. While the cookies are session-cookies and should disabppear when reloading the page, on Chrome they don't always do.
+
+---
+
+- [x] Store username in LocalStorage ~~~(initially for dongled user only)~~~
+- [x] Isolate functionality in LoginManager as much as possible (extract from LoginPanel)
 - [ ] On startup, confirm whether user wants to login with previous username (yes/no only initially)
 - [ ] If yes, fetch user data from server, if successful prompt for authentication and login (using LoginManager)
 - [ ] Eventually offer same ability for un-dongled users
   - [ ] Allow user to change username in initial dialog
   - [ ] Allow user to enter password if he does not have a dongle
 
-# Run internally on port 3002
+# Run internally on port 3002 <mark>Done</mark>
 
 Reason:
 

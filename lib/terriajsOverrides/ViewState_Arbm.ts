@@ -39,6 +39,11 @@ export class ViewState_Arbm extends ViewState {
 
   @action login(loginData: LoginData) {
     this.loginData = loginData;
+
+    // for easy login on startup next time
+    localStorage.setItem("last_username", loginData.user.username);
+
+    // for authorizing Django requests and controlling access to files
     setCookie(SESSION_COOKIE_NAME, loginData.sessionid, {
       sameSite: "None",
       secure: true

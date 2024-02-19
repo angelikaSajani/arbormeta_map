@@ -48,6 +48,7 @@ const viewState = new ViewState({
 });
 
 registerCatalogMembers();
+
 // Register custom search providers in the core TerriaJS. If you only want to register a subset of them, or to add your own,
 // insert your custom version of the code in the registerSearchProviders function here instead.
 registerSearchProviders();
@@ -61,7 +62,6 @@ if (process.env.NODE_ENV === "development") {
 if (process.env.NODE_ENV !== "production" && module.hot) {
   document.styleSheets[0].disabled = true;
 }
-
 module.exports = terria
   .start({
     applicationUrl: window.location,
