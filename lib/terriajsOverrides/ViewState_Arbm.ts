@@ -7,23 +7,22 @@
 //       that only seems possible if we do NOT export ViewState_Arbm as the default
 // ================================================================================================================================================
 
-import {
-  action,
-  observable,
-  makeObservable,
-  computed,
-  runInAction
-} from "mobx";
-import { setCookie, removeCookie } from "typescript-cookie";
+import { action, observable, makeObservable, computed } from "mobx";
+import { getCookie, setCookie, removeCookie } from "typescript-cookie";
 
 import ViewState from "terriajs/lib/ReactViewModels/ViewState";
 import Catalog from "terriajs/lib/Models/Catalog/Catalog";
-import ArbormetaReference, { ARBM_REF_TYPE } from "./ArbormetaReference";
+import ArbormetaReference from "./ArbormetaReference";
 
 const SESSION_COOKIE_NAME = "sessionid";
 const ARBORMETA_GROUP_ID = "ArbormetaData";
 
 export class ViewState_Arbm extends ViewState {
+  sessionCookieAttributes = {
+    sameSite: "None",
+    secure: location.protocol === "https:"
+  };
+
   constructor(options: any /* ViewStateOptions */) {
     // ViewStateOptions is not exported by terriajs
     super(options);
@@ -31,10 +30,24 @@ export class ViewState_Arbm extends ViewState {
     makeObservable(this);
   }
 
-  @computed
   get treesAppUrl(): string {
     if (!this.terria || !this.terria.configParameters) return "";
     return this.terria.configParameters.feedbackUrl || "";
+  }
+
+  get treesAppHost(): HostAndPort | null {
+    const withPath = this.terria.configParameters.feedbackUrl || "";
+    let result: HostAndPort | null = null;
+    if (withPath !== "") {
+      const url = new window.URL(withPath);
+      result = { hostname: url.hostname, port: 0 };
+      if (url.port) {
+        result.port = parseInt(url.port);
+      } else {
+        result.port = url.protocol === "https" ? 443 : 80;
+      }
+    }
+    return result;
   }
 
   @observable loginData?: LoginData;
@@ -46,16 +59,29 @@ export class ViewState_Arbm extends ViewState {
     localStorage.setItem("last_username", loginData.user.username);
 
     // for authorizing Django requests and controlling access to files
-    setCookie(SESSION_COOKIE_NAME, loginData.sessionid, {
+    let attributes: any = {
       sameSite: "None",
       secure: true
-    }); // no expiry -> session cookie
+    };
+    setCookie(
+      SESSION_COOKIE_NAME,
+      loginData.sessionid,
+      //@ts-ignore
+      this.sessionCookieAttributes
+    ); // no expiry -> session cookie
+    setCookie("TestCookieA", "test-value-A", { secure: false });
+    setCookie("TestCookieB", "test-value-B", { secure: true, sameSite: "Lax" });
 
     await this.refreshArbormetaGroup();
   }
 
+  removeCookies() {
+    //@ts-ignore
+    setCookie(SESSION_COOKIE_NAME, "logged-out", this.sessionCookieAttributes); // removeCookie did not work
+  }
+
   @action async logout() {
-    removeCookie(SESSION_COOKIE_NAME);
+    this.removeCookies();
     this.loginData = undefined;
     await this.refreshArbormetaGroup();
   }
@@ -66,12 +92,7 @@ export class ViewState_Arbm extends ViewState {
       (m) => m.uniqueId === ARBORMETA_GROUP_ID
     );
     if (arbmReference && arbmReference.type == ArbormetaReference.type) {
-      console.log(`Found it: ${arbmReference.type}`);
-      const result = await (arbmReference as ArbormetaReference).loadReference(
-        true
-      );
-      console.log(`After reload: ${result}`);
-      debugger;
+      await (arbmReference as ArbormetaReference).loadReference(true);
     }
   }
 
@@ -109,4 +130,9 @@ export interface LoginData {
 
 export interface WithViewState_Arbm {
   viewState: ViewState_Arbm;
+}
+
+export interface HostAndPort {
+  hostname: string;
+  port: number;
 }

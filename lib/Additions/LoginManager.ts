@@ -3,6 +3,9 @@ import { t } from "i18next";
 import { LoginData } from "../terriajsOverrides/ViewState_Arbm";
 import DjangoComms from "./DjangoComms";
 import EncodingUtilities from "./EncodingUtilities";
+import { ViewState_Arbm as ViewState } from "../terriajsOverrides/ViewState_Arbm";
+import TrustedServers from "terriajs-cesium/Source/Core/TrustedServers";
+
 import {
   DisplayError,
   CustomAuthenticationError,
@@ -282,6 +285,30 @@ export default class LoginManager {
       expected_rp_id: window.location.hostname, // server will also check this against constant BASE_URL
       expected_origin: window.location.protocol + "//" + window.location.host
     };
+  };
+
+  // ================================================================================
+  // transformAuthData
+  // ================================================================================
+
+  /**
+   * Not directly related to logging in, but only by configuring the TrustedServers
+   * will our Django server see the `sessionid` and `csrftoken` cookies.
+   *
+   * @param viewState - must be called after terria has started and viewstate.terria is populated
+   */
+  public static configureTrustedServers = (viewState: ViewState) => {
+    const djangoHost = viewState.treesAppHost;
+    if (djangoHost) {
+      console.log(
+        `Adding ${djangoHost.hostname}:${djangoHost.port} to TrustedServers`
+      );
+      TrustedServers.add(djangoHost.hostname, djangoHost.port);
+      if (djangoHost.hostname === "localhost") {
+        console.log(`Adding 127.0.0.1:${djangoHost.port}  to TrustedServers`);
+        TrustedServers.add("127.0.0.1", djangoHost.port);
+      }
+    }
   };
 } // end of class
 

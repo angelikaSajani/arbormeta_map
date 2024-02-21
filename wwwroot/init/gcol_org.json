@@ -766,7 +766,7 @@
       ]
     }
   ],
-  "corsDomains": ["172.28.0.1", "arbormeta.earth"],
+  "corsDomains": ["127.0.0.1", "localhost"],
   // "homeCamera": {
   //   "north": -8,
   //   "east": 158,

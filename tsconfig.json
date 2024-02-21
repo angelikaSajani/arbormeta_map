@@ -1,3 +1,6 @@
 {
-  "extends": "terriajs/tsconfig.json"
+  "extends": "terriajs/tsconfig.json",
+  "compilerOptions": {
+    "types": ["terriajs-cesium", "typescript-cookie"] // added "typescript-cookie"
+  }
 }

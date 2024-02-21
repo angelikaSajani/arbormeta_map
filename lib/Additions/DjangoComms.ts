@@ -7,6 +7,7 @@ import {
   CustomNetworkError,
   CustomInvalidResponse
 } from "./custom-errors";
+import { createReturn } from "typescript";
 
 /**
  * - method: http verb, default 'GET'
@@ -123,24 +124,25 @@ export default class DjangoComms {
       ...options
     };
 
-    // Create a combined signal (abort or timeout), whatever happens first
-    let signals: AbortSignal[] | [] = [];
-    if (_options.abortSignal) {
-      //@ts-ignore
-      signals.push(_options.abortSignal);
+    let combinedSignal = _options.abortSignal!;
+    if (DjangoComms.canUseTimouts()) {
+      // Create a combined signal (abort or timeout), whatever happens first
+      let signals: AbortSignal[] | [] = [];
+      if (_options.abortSignal) {
+        //@ts-ignore
+        signals.push(_options.abortSignal);
+      }
+      if (_options.timeout! > 0) {
+        //@ts-ignore
+        signals.push(AbortSignal.timeout(_options.timeout!));
+      }
+      if (signals.length > 1) {
+        //@ts-ignore
+        combinedSignal = AbortSignal.any(signals);
+      } else if (signals.length == 1) {
+        combinedSignal = signals[0];
+      }
     }
-    // These features are not yet available in all browsers...
-    if (
-      "any" in AbortSignal &&
-      "timeout" in AbortSignal &&
-      _options.timeout! > 0
-    ) {
-      //@ts-ignore
-      signals.push(AbortSignal.timeout(_options.timeout!));
-    }
-
-    //@ts-ignore
-    const combinedSignal: AbortSignal = AbortSignal.any(signals);
 
     // build the headers
     const headers: Record<string, string> = {
@@ -235,5 +237,21 @@ export default class DjangoComms {
     const data = await resp.json();
     //@ts-ignore
     return data.token === undefined ? "" : data.token;
+  };
+
+  // -------------------------------------------------------------------------------------
+  /**
+   *
+   * @returns true if the browswer supports both AbortSignal.any() and AbortSignal.timout()
+   * Safari atm does not. Chrome does
+   */
+  private static canUseTimouts = (): Boolean => {
+    //@ts-ignore
+    return (
+      //@ts-ignore
+      typeof AbortSignal.any === "function" &&
+      //@ts-ignore
+      typeof AbortSignal.timeout === "function"
+    );
   };
 }

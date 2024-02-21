@@ -10,7 +10,7 @@
       "name": "ArborMeta Datasets",
       "type": "arbm-reference",
       "isGroup": true,
-      "url": "http://127.0.0.1:8043/api/v1/terria/catalog.json",
+      "url": "http://localhost:8043/api/v1/terria/catalog.json",
       "shareKeys": ["Root Group/Arbormeta Datasets"]
     },
 

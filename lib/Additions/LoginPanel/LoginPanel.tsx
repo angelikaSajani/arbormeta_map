@@ -103,8 +103,13 @@ class LoginPanel extends React.Component<PropTypes, LoginPanelState> {
   // ---------------------------------------------------------------------------------------------------
 
   componentDidMount = () => {
+    const { viewState } = this.props;
+
+    console.log("LoginPanel did mount");
+
     window.addEventListener("keydown", this.keyListener, true);
     this.abortController = new AbortController();
+    viewState.removeCookies();
   };
 
   // ---------------------------------------------------------------------------------------------------
@@ -135,8 +140,6 @@ class LoginPanel extends React.Component<PropTypes, LoginPanelState> {
     // Since aborting is supposed to open when the user closes the LoginPanel, but
     // closing the LoginPanel only closes it, but does not necessarily unmount it,
     // we have to re-create a new AbortController for when the user tries again to log in.
-
-    // console.log('----- creating new AbortController');
     this.abortController?.abort();
     this.abortController = new AbortController();
   }

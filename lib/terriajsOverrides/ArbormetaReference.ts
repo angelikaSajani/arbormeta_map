@@ -15,17 +15,6 @@ import updateModelFromJson from "terriajs/lib/Models/Definition/updateModelFromJ
 import CatalogMemberFactory from "terriajs/lib/Models/Catalog/CatalogMemberFactory";
 import proxyCatalogItemUrl from "terriajs/lib/Models/Catalog/proxyCatalogItemUrl";
 
-// import JsonValue from "terriajs/lib/Core/Json";
-
-// function my_loadJson5(
-//   urlOrResource: string
-// ): Promise<JsonValue> {
-//   debugger;
-//   let result = loadJson5(urlOrResource, headers);
-//   debugger;
-//   return result;
-// }
-
 import TerriaReference from "terriajs/lib/Models/Catalog/CatalogReferences/TerriaReference";
 /**
  * Exact copy of {@link TerriaReference}
@@ -48,7 +37,6 @@ export default class ArbormetaReference extends UrlMixin(
       return undefined;
     }
 
-    debugger;
     const initJson = yield loadJson5(
       proxyCatalogItemUrl(this, this.url, this.cacheDuration)
     );
