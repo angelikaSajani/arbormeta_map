@@ -22,13 +22,14 @@ import {
   LoginData
 } from "../../terriajsOverrides/ViewState_Arbm";
 
-type Modus = "typing" | "loading";
+type Modus = "typing" | "loading" | "updatingCatalog";
 type LoginStep =
   | "typingUsername"
   | "loadingUser"
   | "typingPassword"
   | "authenticatingPassword"
-  | "authenticatingDongle";
+  | "authenticatingDongle"
+  | "updatingCatalog";
 
 interface PropTypes extends WithTranslation {
   viewState: ViewState;
@@ -224,12 +225,14 @@ class LoginPanel extends React.Component<PropTypes, LoginPanelState> {
   ): LoginStep {
     if (modus == "typing") {
       return authData === undefined ? "typingUsername" : "typingPassword";
-    } else {
+    } else if (modus == "loading") {
       return authData === undefined
         ? "loadingUser"
         : authData.userInfo.hasAuthenticators
         ? "authenticatingDongle"
         : "authenticatingPassword";
+    } else {
+      return modus as LoginStep;
     }
   }
 
@@ -377,10 +380,13 @@ class LoginPanel extends React.Component<PropTypes, LoginPanelState> {
 
   // ---------------------------------------------------------------------------------------------------
 
-  private login = (loginData: LoginData) => {
+  private login = async (loginData: LoginData) => {
+    this.updateModus("updatingCatalog", "");
+    await this.props.viewState.login(loginData);
     this.resetState();
-    this.props.viewState.login(loginData);
   };
+
+  // ---------------------------------------------------------------------------------------------------
 
   render() {
     const { t } = this.props;
@@ -484,6 +490,9 @@ class LoginPanel extends React.Component<PropTypes, LoginPanelState> {
           )}
           {currentStep == "authenticatingDongle" && (
             <div>{t("loginPanel.progress.authingDongle")}</div>
+          )}
+          {currentStep == "updatingCatalog" && (
+            <div>{"Updating Catalog..."}</div>
           )}
         </Box>
       </MenuPanel>

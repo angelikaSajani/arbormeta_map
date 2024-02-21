@@ -1,4 +1,6 @@
 import { getCookie, setCookie } from "typescript-cookie";
+import JsonValue from "terriajs/lib/Core/Json";
+
 import {
   CustomTimeoutError,
   CustomAbortError,
@@ -67,7 +69,7 @@ export default class DjangoComms {
     requiredKeys: string[] | [],
     body: any = null,
     options: DjangoFetchOptions
-  ): Promise<any> => {
+  ): Promise<JsonValue> => {
     return DjangoComms.fetchFromAPI(baseURL, urlTail, body, options)
       .then((resp) => resp.json())
       .then((data) => {

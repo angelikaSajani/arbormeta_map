@@ -21,6 +21,11 @@ import defined from "terriajs-cesium/Source/Core/defined";
 import loadPlugins from "./lib/Core/loadPlugins";
 import plugins from "./plugins";
 
+import CatalogMemberFactory from "terriajs/lib/Models/Catalog/CatalogMemberFactory";
+import ArbormetaReference from "./lib/terriajsOverrides/ArbormetaReference";
+
+import TrustedServers from "terriajs-cesium/Source/Core/TrustedServers";
+
 // Register all types of catalog members in the core TerriaJS.  If you only want to register a subset of them
 // (i.e. to reduce the size of your application if you don't actually use them all), feel free to copy a subset of
 // the code in the registerCatalogMembers function here instead.
@@ -48,6 +53,26 @@ const viewState = new ViewState({
 });
 
 registerCatalogMembers();
+console.log(
+  " >>>>>>>>>>>>> registering ArbormetaReference: " + ArbormetaReference.type
+);
+console.log(" >>> before my registration: ");
+console.log(CatalogMemberFactory.constructorsArray);
+CatalogMemberFactory.register(ArbormetaReference.type, ArbormetaReference);
+console.log(" >>> after my registration: ");
+console.log(CatalogMemberFactory.constructorsArray);
+
+TrustedServers.add("127.0.0.1", 8043);
+TrustedServers.add("localhost", 8043);
+if (
+  TrustedServers.contains(
+    "http://127.0.0.1:8043/tjs/plot/Dungarvan/dung_zonalstats_180cm.geojson"
+  )
+) {
+  console.log(" YES ");
+} else {
+  console.log(" NOOO ");
+}
 
 // Register custom search providers in the core TerriaJS. If you only want to register a subset of them, or to add your own,
 // insert your custom version of the code in the registerSearchProviders function here instead.

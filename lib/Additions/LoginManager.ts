@@ -120,7 +120,8 @@ export default class LoginManager {
       { method: "OPTIONS", abortSignal }
     )
       .then((data) => {
-        const userInfo = data.userInfo;
+        const authData = data! as unknown as AuthData;
+        const userInfo = authData.userInfo;
         if (!userInfo.hasAuthenticators && !userInfo.hasPassword) {
           throw new CustomAuthenticationError(
             `User ${username} has neither authentictor nor password.`
@@ -129,9 +130,9 @@ export default class LoginManager {
 
         // Normal case...
         if (userInfo.hasAuthenticators) {
-          transformAuthData(data, supportEmail);
+          transformAuthData(authData, supportEmail);
         }
-        return data as AuthData;
+        return authData;
       })
       .catch((error) => {
         if (error.name == "NetworkError") {
@@ -209,13 +210,14 @@ export default class LoginManager {
     } else {
       loginRequestBody!.password = credentials.viaPassword!;
     }
-    return DjangoComms.fetchJsonFromAPI(
+    const result = DjangoComms.fetchJsonFromAPI(
       baseURL,
       "auth/login/session/",
       ["user", "sessionid"],
       loginRequestBody,
       { method: "POST", abortSignal }
     );
+    return result as unknown as LoginData;
   };
 
   // ================================================================================

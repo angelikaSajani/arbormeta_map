@@ -6,9 +6,9 @@
   // "splitPosition": 0.5,
   "catalog": [
     {
-      "id": "ArbormetaData",
-      "name": "Arbormeta Datasets",
-      "type": "terria-reference",
+      "id": "ArbormetaData", // don't change, must be same as constant in ViewState_Arbm
+      "name": "ArborMeta Datasets",
+      "type": "arbm-reference",
       "isGroup": true,
       "url": "http://127.0.0.1:8043/api/v1/terria/catalog.json",
       "shareKeys": ["Root Group/Arbormeta Datasets"]
@@ -270,7 +270,7 @@
       ]
     }
   ],
-  "corsDomains": ["172.28.0.1", "arbormeta.earth"],
+  "corsDomains": ["localhost:8043", "127.0.0.1:8043"],
   // "homeCamera": {
   //   "north": -8,
   //   "east": 158,

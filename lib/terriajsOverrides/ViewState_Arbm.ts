@@ -17,9 +17,11 @@ import {
 import { setCookie, removeCookie } from "typescript-cookie";
 
 import ViewState from "terriajs/lib/ReactViewModels/ViewState";
-import { sessionStorageDefined } from "../Additions/utils";
+import Catalog from "terriajs/lib/Models/Catalog/Catalog";
+import ArbormetaReference, { ARBM_REF_TYPE } from "./ArbormetaReference";
 
 const SESSION_COOKIE_NAME = "sessionid";
+const ARBORMETA_GROUP_ID = "ArbormetaData";
 
 export class ViewState_Arbm extends ViewState {
   constructor(options: any /* ViewStateOptions */) {
@@ -37,7 +39,7 @@ export class ViewState_Arbm extends ViewState {
 
   @observable loginData?: LoginData;
 
-  @action login(loginData: LoginData) {
+  @action async login(loginData: LoginData) {
     this.loginData = loginData;
 
     // for easy login on startup next time
@@ -48,17 +50,30 @@ export class ViewState_Arbm extends ViewState {
       sameSite: "None",
       secure: true
     }); // no expiry -> session cookie
+
+    await this.refreshArbormetaGroup();
   }
 
-  @action logout() {
+  @action async logout() {
     removeCookie(SESSION_COOKIE_NAME);
     this.loginData = undefined;
+    await this.refreshArbormetaGroup();
   }
 
-  //   @computed
-  //   get authTokenHeader(): string {
-  //     return this.loginData === undefined ? "" : "Token " + this.loginData.token;
-  //   }
+  @action async refreshArbormetaGroup() {
+    let catalog: Catalog = this.terria.catalog;
+    let arbmReference = catalog.group.memberModels.find(
+      (m) => m.uniqueId === ARBORMETA_GROUP_ID
+    );
+    if (arbmReference && arbmReference.type == ArbormetaReference.type) {
+      console.log(`Found it: ${arbmReference.type}`);
+      const result = await (arbmReference as ArbormetaReference).loadReference(
+        true
+      );
+      console.log(`After reload: ${result}`);
+      debugger;
+    }
+  }
 
   @computed
   get userBestName(): string {
