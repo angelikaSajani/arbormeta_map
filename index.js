@@ -21,6 +21,10 @@ import defined from "terriajs-cesium/Source/Core/defined";
 import loadPlugins from "./lib/Core/loadPlugins";
 import plugins from "./plugins";
 
+import CatalogMemberFactory from "terriajs/lib/Models/Catalog/CatalogMemberFactory"; // AIS, added  < ======================== all those imports
+import ArbormetaReference from "./lib/terriajsOverrides/ArbormetaReference";
+import LoginManager from "./lib/Additions/LoginManager";
+
 // Register all types of catalog members in the core TerriaJS.  If you only want to register a subset of them
 // (i.e. to reduce the size of your application if you don't actually use them all), feel free to copy a subset of
 // the code in the registerCatalogMembers function here instead.
@@ -48,6 +52,8 @@ const viewState = new ViewState({
 });
 
 registerCatalogMembers();
+CatalogMemberFactory.register(ArbormetaReference.type, ArbormetaReference); // AIS, added  < ======================== our own top-level group
+
 // Register custom search providers in the core TerriaJS. If you only want to register a subset of them, or to add your own,
 // insert your custom version of the code in the registerSearchProviders function here instead.
 registerSearchProviders();
@@ -61,7 +67,6 @@ if (process.env.NODE_ENV === "development") {
 if (process.env.NODE_ENV !== "production" && module.hot) {
   document.styleSheets[0].disabled = true;
 }
-
 module.exports = terria
   .start({
     applicationUrl: window.location,
@@ -82,6 +87,7 @@ module.exports = terria
     terria.raiseErrorToUser(e);
   })
   .finally(function () {
+    LoginManager.configureTrustedServers(viewState); // AIS, added      < ======================== necessary for cookies to come through
     terria.loadInitSources().then((result) => result.raiseError(terria));
 
     try {
