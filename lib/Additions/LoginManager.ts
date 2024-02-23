@@ -76,13 +76,15 @@ export interface LoginCredentials {
 
 /** body of the body of an API request to Django to login:
  *
- * All values are strngs.
+ * All values are strings.
  * `username` must always be populated
+ * `app_used` should always be 'terriamap'
  * - if logging in by password, `password` is mandatory
  * - if logging in by dongle, `digest` and `authenticator_id` ae mandatory
  */
 interface LoginRequestBody {
   username: string;
+  app_used: string;
   password?: string;
   digest?: string;
   authenticator_id?: string;
@@ -205,7 +207,8 @@ export default class LoginManager {
     credentials: LoginCredentials
   ): Promise<LoginData> => {
     const loginRequestBody: LoginRequestBody = {
-      username: credentials.username
+      username: credentials.username,
+      app_used: "terriamap"
     };
     if (credentials.viaDongle) {
       loginRequestBody.digest = JSON.stringify(credentials.viaDongle);
@@ -288,7 +291,7 @@ export default class LoginManager {
   };
 
   // ================================================================================
-  // transformAuthData
+  // configureTrustedServers
   // ================================================================================
 
   /**

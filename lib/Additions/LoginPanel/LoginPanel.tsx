@@ -104,9 +104,6 @@ class LoginPanel extends React.Component<PropTypes, LoginPanelState> {
 
   componentDidMount = () => {
     const { viewState } = this.props;
-
-    console.log("LoginPanel did mount");
-
     window.addEventListener("keydown", this.keyListener, true);
     this.abortController = new AbortController();
     viewState.removeCookies();
@@ -385,8 +382,10 @@ class LoginPanel extends React.Component<PropTypes, LoginPanelState> {
 
   private login = async (loginData: LoginData) => {
     this.updateModus("updatingCatalog", "");
-    await this.props.viewState.login(loginData);
     this.resetState();
+    // Must happen after we called this.resetState() because logging in via the viewState
+    // will cause the LoginPanel component to be unmounted, and once unmounted, the state should never be changed.
+    await this.props.viewState.login(loginData);
   };
 
   // ---------------------------------------------------------------------------------------------------
