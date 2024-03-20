@@ -2,6 +2,36 @@ import { ViewState_Arbm as ViewState } from "../terriajsOverrides/ViewState_Arbm
 
 // ---------------------------------------------------------------------------------------------------
 
+/**
+ * Returns true if the two uris refer to the same host.
+ * To be regarded as same they must have the same protocol, hostname, and port number
+ * Port numbers can be explicit or implicit (ie 80 for http, 443 for https)
+ * so "http://abc:80" will be regarded as identical to "http://abc"
+ * @param uri1
+ * @param uri2
+ */
+export function compareUris(uri1: string, uri2: string): boolean {
+  const url1 = new window.URL(uri1);
+  const url2 = new window.URL(uri2);
+
+  const port1 = url1.port
+    ? parseInt(url1.port)
+    : url1.protocol === "https"
+    ? 443
+    : 80;
+  const port2 = url2.port
+    ? parseInt(url2.port)
+    : url2.protocol === "https"
+    ? 443
+    : 80;
+
+  return (
+    url1.protocol === url2.protocol &&
+    url1.hostname === url2.hostname &&
+    port1 === port2
+  );
+}
+
 // ---------------------------------------------------------------------------------------------------
 
 export function sessionStorageNotDefined(key: string): boolean {

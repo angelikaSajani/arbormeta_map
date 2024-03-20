@@ -23,7 +23,6 @@ import plugins from "./plugins";
 
 import CatalogMemberFactory from "terriajs/lib/Models/Catalog/CatalogMemberFactory"; // AIS, added  < ======================== all those imports
 import ArbormetaReference from "./lib/terriajsOverrides/ArbormetaReference";
-import LoginManager from "./lib/Additions/LoginManager";
 
 // Register all types of catalog members in the core TerriaJS.  If you only want to register a subset of them
 // (i.e. to reduce the size of your application if you don't actually use them all), feel free to copy a subset of
@@ -67,6 +66,7 @@ if (process.env.NODE_ENV === "development") {
 if (process.env.NODE_ENV !== "production" && module.hot) {
   document.styleSheets[0].disabled = true;
 }
+
 module.exports = terria
   .start({
     applicationUrl: window.location,
@@ -74,7 +74,13 @@ module.exports = terria
     shareDataService: new ShareDataService({
       terria: terria
     }),
-    beforeRestoreAppState: () => {
+    beforeRestoreAppState: async () => {
+      // Check whether the page was loaded because a link in the web-app
+      // was clicked, and if yes, whether we have a session cookie.
+      // If yes, attempt to login via that Cookie BEFORE loading data.
+      await viewState.checkWebAppSession();
+      console.log("about to start terria");
+
       // Load plugins before restoring app state because app state may
       // reference plugin components and catalog items.
       return loadPlugins(viewState, plugins).catch((error) => {
@@ -87,7 +93,6 @@ module.exports = terria
     terria.raiseErrorToUser(e);
   })
   .finally(function () {
-    LoginManager.configureTrustedServers(viewState); // AIS, added      < ======================== necessary for cookies to come through
     terria.loadInitSources().then((result) => result.raiseError(terria));
 
     try {

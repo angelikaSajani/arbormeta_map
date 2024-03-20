@@ -197,6 +197,13 @@ export default class LoginManager {
    * Sends a log in request to the Django-servers api endpoint and returns
    * all relevant data about the user (name, email, flags, permissins)
    * and a session ID for creating a session cookie.
+   * Two versions:
+   * A) if passing credentials, will attempt to log in with those credentials
+   * B) otherwise will use the session Cookie to simply retrieve the details of the
+   *    logged in user (if the session is valid and the user is active)
+   * The data returned by the request will be identical in both cases.
+   * The second version is meant to facilitate the transfer of the logged-in state
+   * from the webapp to the terria app when clicking a link.
    * @param baseURL - the base url for the Django-server's API endpoint
    * @param abortSignal - optional (@link AbortSignal) if request should be abortable
    * @param credentials - username and either password or verified authenticator (dongle) data
@@ -204,23 +211,31 @@ export default class LoginManager {
   public static sendLoginRequest = async (
     baseURL: string,
     abortSignal: AbortSignal | null,
-    credentials: LoginCredentials
+    credentials: LoginCredentials | null
   ): Promise<LoginData> => {
-    const loginRequestBody: LoginRequestBody = {
-      username: credentials.username,
-      app_used: "terriamap"
-    };
-    if (credentials.viaDongle) {
-      loginRequestBody.digest = JSON.stringify(credentials.viaDongle);
-      loginRequestBody.authenticator_id = credentials.viaDongle.id;
+    let body: any = {};
+    let endpoint: string;
+    if (credentials) {
+      const loginRequestBody: LoginRequestBody = {
+        username: credentials.username,
+        app_used: "terriamap"
+      };
+      if (credentials.viaDongle) {
+        loginRequestBody.digest = JSON.stringify(credentials.viaDongle);
+        loginRequestBody.authenticator_id = credentials.viaDongle.id;
+      } else {
+        loginRequestBody!.password = credentials.viaPassword!;
+      }
+      body = loginRequestBody;
+      endpoint = "auth/login/session/";
     } else {
-      loginRequestBody!.password = credentials.viaPassword!;
+      endpoint = "auth/login/sessionid/";
     }
     const result = DjangoComms.fetchJsonFromAPI(
       baseURL,
-      "auth/login/session/",
+      endpoint,
       ["user", "sessionid"],
-      loginRequestBody,
+      body,
       { method: "POST", abortSignal }
     );
     return result as unknown as LoginData;
@@ -297,20 +312,35 @@ export default class LoginManager {
   /**
    * Not directly related to logging in, but only by configuring the TrustedServers
    * will our Django server see the `sessionid` and `csrftoken` cookies.
+   * Explanation: see https://github.com/TerriaJS/terriajs/discussions/7055
    *
+   * We create extra security by removing the Django Server from the TrustedServers list
+   * when logging out -> user cannot simulate logging to get file access just be manually
+   * setting a session cookei
    * @param viewState - must be called after terria has started and viewstate.terria is populated
    */
   public static configureTrustedServers = (viewState: ViewState) => {
     const djangoHost = viewState.treesAppHost;
     if (djangoHost) {
-      console.log(
-        `Adding ${djangoHost.hostname}:${djangoHost.port} to TrustedServers`
-      );
-      TrustedServers.add(djangoHost.hostname, djangoHost.port);
+      let servers = [
+        {
+          host: djangoHost.hostname,
+          port: djangoHost.port
+        }
+      ];
       if (djangoHost.hostname === "localhost") {
-        console.log(`Adding 127.0.0.1:${djangoHost.port}  to TrustedServers`);
-        TrustedServers.add("127.0.0.1", djangoHost.port);
+        servers.push({
+          host: "127.0.0.1",
+          port: djangoHost.port
+        });
       }
+      // If somebody is logged in, add to TrustedServers, otherwise remove
+      let f = viewState.loginData ? TrustedServers.add : TrustedServers.remove;
+      try {
+        for (const server of servers) {
+          f(server.host, server.port); // add or remove those servers
+        }
+      } catch {}
     }
   };
 } // end of class

@@ -13,6 +13,8 @@ import { getCookie, setCookie, removeCookie } from "typescript-cookie";
 import ViewState from "terriajs/lib/ReactViewModels/ViewState";
 import Catalog from "terriajs/lib/Models/Catalog/Catalog";
 import ArbormetaReference from "./ArbormetaReference";
+import { compareUris } from "../Additions/utils";
+import LoginManager from "../Additions/LoginManager";
 
 const SESSION_COOKIE_NAME = "sessionid";
 const ARBORMETA_GROUP_ID = "ArbormetaData";
@@ -58,19 +60,13 @@ export class ViewState_Arbm extends ViewState {
     // for easy login on startup next time
     localStorage.setItem("last_username", loginData.user.username);
 
-    // for authorizing Django requests and controlling access to files
-    let attributes: any = {
-      sameSite: "None",
-      secure: true
-    };
     setCookie(
       SESSION_COOKIE_NAME,
       loginData.sessionid,
       //@ts-ignore
       this.sessionCookieAttributes
     ); // no expiry -> session cookie
-    setCookie("TestCookieA", "test-value-A", { secure: false });
-    setCookie("TestCookieB", "test-value-B", { secure: true, sameSite: "Lax" });
+    LoginManager.configureTrustedServers(this);
 
     await this.refreshArbormetaGroup();
   }
@@ -83,6 +79,7 @@ export class ViewState_Arbm extends ViewState {
   @action async logout() {
     this.removeCookies();
     this.loginData = undefined;
+    LoginManager.configureTrustedServers(this);
     await this.refreshArbormetaGroup();
   }
 
@@ -111,7 +108,43 @@ export class ViewState_Arbm extends ViewState {
     let user = this.loginData.user!;
     return user.email;
   }
-}
+
+  /**
+   * To be called during startup, BEFORE data catalog is loaded and the page is rendered.
+   * Check whether the page got loaded because the user clicked a link
+   * in the ArborMeta web app, and if so, wether there was a logged in user
+   * (that is, we have a session cookie)
+   * If we do, attempt to log in (without user interaction) via that session cookie,
+   * but do not display an error if that does not work.
+   */
+  checkWebAppSession = async () => {
+    let referrer = document.referrer;
+
+    let appUrl = this.treesAppUrl;
+    let sessionid = getCookie(SESSION_COOKIE_NAME);
+    console.log(`referrer: '${referrer}'`);
+    console.log(`appUrl: '${appUrl}'`);
+    console.log(`sessionid: '${sessionid}'`);
+    console.log("trying to login with cookie");
+    if (referrer && appUrl && compareUris(referrer, appUrl) && sessionid) {
+      try {
+        let loginData: LoginData = await LoginManager.sendLoginRequest(
+          appUrl,
+          null,
+          null
+        );
+        console.log("got login results");
+        this.loginData = loginData;
+        // for easy login on startup next time
+        localStorage.setItem("last_username", loginData.user.username);
+        LoginManager.configureTrustedServers(this);
+        console.log("stored login results");
+      } catch {
+        console.log("got login error");
+      }
+    }
+  };
+} // end of class ViewState_Arbm
 
 export interface User {
   username: string;

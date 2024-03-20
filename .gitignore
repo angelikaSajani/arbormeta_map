@@ -2,6 +2,7 @@ node_modules/
 .idea/
 wwwroot/build/
 wwwroot/tjs/
+wwwroot/terriafiles/
 wwwroot/doc/
 wwwroot/index.html
 npm-debug.log
