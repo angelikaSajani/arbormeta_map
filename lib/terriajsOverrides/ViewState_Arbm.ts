@@ -118,15 +118,14 @@ export class ViewState_Arbm extends ViewState {
    * but do not display an error if that does not work.
    */
   checkWebAppSession = async () => {
-    let referrer = document.referrer;
+    console.log("in checkWebAppSession()");
 
+    let referrer = document.referrer;
     let appUrl = this.treesAppUrl;
-    let sessionid = getCookie(SESSION_COOKIE_NAME);
-    console.log(`referrer: '${referrer}'`);
-    console.log(`appUrl: '${appUrl}'`);
-    console.log(`sessionid: '${sessionid}'`);
-    console.log("trying to login with cookie");
-    if (referrer && appUrl && compareUris(referrer, appUrl) && sessionid) {
+    // NOTE: no point testing for sessionid cookie, as under https
+    // the cookie is 'http-only', hence javascript can't see it.
+    if (referrer && appUrl && compareUris(referrer, appUrl)) {
+      console.log("trying to login with cookie");
       try {
         let loginData: LoginData = await LoginManager.sendLoginRequest(
           appUrl,

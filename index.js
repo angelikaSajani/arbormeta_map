@@ -79,7 +79,6 @@ module.exports = terria
       // was clicked, and if yes, whether we have a session cookie.
       // If yes, attempt to login via that Cookie BEFORE loading data.
       await viewState.checkWebAppSession();
-      console.log("about to start terria");
 
       // Load plugins before restoring app state because app state may
       // reference plugin components and catalog items.
