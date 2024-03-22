@@ -43,13 +43,15 @@ import TourPortal from "terriajs/lib/ReactViews/Tour/TourPortal";
 import WelcomeMessage from "terriajs/lib/ReactViews/WelcomeMessage/WelcomeMessage";
 import SelectableDimensionWorkflow from "terriajs/lib/ReactViews/Workflow/SelectableDimensionWorkflow";
 import WorkflowPanelPortal from "terriajs/lib/ReactViews/Workflow/WorkflowPanelPortal";
-import { ContextProviders } from "terriajs/lib/ReactViews/Context";
+import { ContextProviders } from "terriajs/lib/ReactViews/Context/ContextProviders";
 import { GlobalTerriaStyles } from "terriajs/lib/ReactViews/StandardUserInterface/GlobalTerriaStyles";
-import MapColumn from "./MapColumn"; // AIS: use our override                    < ============================================================
+import MapColumn from "./MapColumn"; // AIS: use our override            < ============================================================
 import processCustomElements from "terriajs/lib/ReactViews/StandardUserInterface/processCustomElements";
 import SidePanelContainer from "terriajs/lib/ReactViews/StandardUserInterface/SidePanelContainer";
 import Styles from "terriajs/lib/ReactViews/StandardUserInterface/standard-user-interface.scss";
 import { terriaTheme } from "terriajs/lib/ReactViews/StandardUserInterface/StandardTheme";
+
+import { PromptContextProvider } from "../Additions/ModalPromptConfirm/PromptContext";
 
 export const animationDuration = 250;
 
@@ -152,164 +154,166 @@ const StandardUserInterfaceBase: React.FC<StandardUserInterfaceProps> =
       !props.viewState.explorerPanelIsVisible &&
       !props.viewState.storyBuilderShown;
     return (
-      <ContextProviders viewState={props.viewState} theme={mergedTheme}>
-        <GlobalTerriaStyles />
-        <TourPortal />
-        <CollapsedNavigation />
-        <SatelliteHelpPrompt />
-        <Medium>
-          <SelectableDimensionWorkflow />
-        </Medium>
-        <div className={Styles.storyWrapper}>
-          {!props.viewState.disclaimerVisible && <WelcomeMessage />}
-          <div
-            className={Styles.uiRoot}
-            css={`
-              ${props.viewState.disclaimerVisible && `filter: blur(10px);`}
-            `}
-            onDragOver={handleDragOver}
-          >
+      <PromptContextProvider>
+        <ContextProviders viewState={props.viewState} theme={mergedTheme}>
+          <GlobalTerriaStyles />
+          <TourPortal />
+          <CollapsedNavigation />
+          <SatelliteHelpPrompt />
+          <Medium>
+            <SelectableDimensionWorkflow />
+          </Medium>
+          <div className={Styles.storyWrapper}>
+            {!props.viewState.disclaimerVisible && <WelcomeMessage />}
             <div
-              className={Styles.ui}
+              className={Styles.uiRoot}
               css={`
-                background: ${theme.dark};
+                ${props.viewState.disclaimerVisible && `filter: blur(10px);`}
               `}
+              onDragOver={handleDragOver}
             >
-              <div className={Styles.uiInner}>
-                {!props.viewState.hideMapUi && (
-                  <>
-                    <Small>
-                      <MobileHeader
-                        menuItems={customElements.menu}
-                        menuLeftItems={customElements.menuLeft}
-                        version={props.version}
-                      />
-                    </Small>
-                    <Medium>
-                      <>
-                        <WorkflowPanelPortal
-                          show={props.terria.isWorkflowPanelActive}
+              <div
+                className={Styles.ui}
+                css={`
+                  background: ${theme.dark};
+                `}
+              >
+                <div className={Styles.uiInner}>
+                  {!props.viewState.hideMapUi && (
+                    <>
+                      <Small>
+                        <MobileHeader
+                          menuItems={customElements.menu}
+                          menuLeftItems={customElements.menuLeft}
+                          version={props.version}
                         />
-                        <SidePanelContainer
-                          tabIndex={0}
-                          show={
-                            props.viewState.isMapFullScreen === false &&
-                            props.terria.isWorkflowPanelActive === false
-                          }
-                        >
-                          <FullScreenButton
-                            minified
-                            animationDuration={250}
-                            btnText={t("addData.btnHide")}
+                      </Small>
+                      <Medium>
+                        <>
+                          <WorkflowPanelPortal
+                            show={props.terria.isWorkflowPanelActive}
                           />
-                          <Branding version={props.version} />
-                          <SidePanel />
-                        </SidePanelContainer>
-                      </>
-                    </Medium>
-                  </>
-                )}
-                <Medium>
-                  <div
-                    className={classNames(Styles.showWorkbenchButton, {
-                      [Styles.showWorkbenchButtonTrainerBarVisible]:
-                        props.viewState.trainerBarVisible,
-                      [Styles.showWorkbenchButtonisVisible]:
-                        props.viewState.isMapFullScreen,
-                      [Styles.showWorkbenchButtonisNotVisible]:
-                        !props.viewState.isMapFullScreen
-                    })}
-                  >
-                    <FullScreenButton
-                      minified={false}
-                      btnText={t("sui.showWorkbench")}
+                          <SidePanelContainer
+                            tabIndex={0}
+                            show={
+                              props.viewState.isMapFullScreen === false &&
+                              props.terria.isWorkflowPanelActive === false
+                            }
+                          >
+                            <FullScreenButton
+                              minified
+                              animationDuration={250}
+                              btnText={t("addData.btnHide")}
+                            />
+                            <Branding version={props.version} />
+                            <SidePanel />
+                          </SidePanelContainer>
+                        </>
+                      </Medium>
+                    </>
+                  )}
+                  <Medium>
+                    <div
+                      className={classNames(Styles.showWorkbenchButton, {
+                        [Styles.showWorkbenchButtonTrainerBarVisible]:
+                          props.viewState.trainerBarVisible,
+                        [Styles.showWorkbenchButtonisVisible]:
+                          props.viewState.isMapFullScreen,
+                        [Styles.showWorkbenchButtonisNotVisible]:
+                          !props.viewState.isMapFullScreen
+                      })}
+                    >
+                      <FullScreenButton
+                        minified={false}
+                        btnText={t("sui.showWorkbench")}
+                        animationDuration={animationDuration}
+                        elementConfig={props.terria.elements.get(
+                          "show-workbench"
+                        )}
+                      />
+                    </div>
+                  </Medium>
+
+                  <section className={Styles.map}>
+                    <MapColumn
+                      customFeedbacks={customElements.feedback}
+                      customElements={customElements}
                       animationDuration={animationDuration}
-                      elementConfig={props.terria.elements.get(
-                        "show-workbench"
-                      )}
                     />
-                  </div>
-                </Medium>
-
-                <section className={Styles.map}>
-                  <MapColumn
-                    customFeedbacks={customElements.feedback}
-                    customElements={customElements}
-                    animationDuration={animationDuration}
-                  />
-                  <div id="map-data-attribution" />
-                  <main>
-                    <ExplorerWindow />
-                    {props.terria.configParameters.experimentalFeatures &&
-                      !props.viewState.hideMapUi && (
-                        <ExperimentalFeatures
-                          experimentalItems={customElements.experimentalMenu}
-                        />
-                      )}
-                  </main>
-                </section>
+                    <div id="map-data-attribution" />
+                    <main>
+                      <ExplorerWindow />
+                      {props.terria.configParameters.experimentalFeatures &&
+                        !props.viewState.hideMapUi && (
+                          <ExperimentalFeatures
+                            experimentalItems={customElements.experimentalMenu}
+                          />
+                        )}
+                    </main>
+                  </section>
+                </div>
               </div>
-            </div>
-            {!props.viewState.hideMapUi && (
+              {!props.viewState.hideMapUi && (
+                <Medium>
+                  <TrainerBar />
+                </Medium>
+              )}
               <Medium>
-                <TrainerBar />
+                {/* I think this does what the previous boolean condition does, but without the console error */}
+                {props.viewState.isToolOpen && (
+                  <Tool {...props.viewState.currentTool!} />
+                )}
               </Medium>
-            )}
-            <Medium>
-              {/* I think this does what the previous boolean condition does, but without the console error */}
-              {props.viewState.isToolOpen && (
-                <Tool {...props.viewState.currentTool!} />
-              )}
-            </Medium>
 
-            {props.viewState.panel}
+              {props.viewState.panel}
 
-            <Notification />
-            <MapInteractionWindow />
-            {!customElements.feedback.length &&
-              props.terria.configParameters.feedbackUrl &&
-              !props.viewState.hideMapUi &&
-              props.viewState.feedbackFormIsVisible && <FeedbackForm />}
-            <div
-              className={classNames(
-                Styles.featureInfo,
-                props.viewState.topElement === "FeatureInfo"
-                  ? "top-element"
-                  : "",
-                {
-                  [Styles.featureInfoFullScreen]:
-                    props.viewState.isMapFullScreen
-                }
-              )}
-              tabIndex={0}
-              onClick={action(() => {
-                props.viewState.topElement = "FeatureInfo";
-              })}
-            >
-              <FeatureInfoPanel />
+              <Notification />
+              <MapInteractionWindow />
+              {!customElements.feedback.length &&
+                props.terria.configParameters.feedbackUrl &&
+                !props.viewState.hideMapUi &&
+                props.viewState.feedbackFormIsVisible && <FeedbackForm />}
+              <div
+                className={classNames(
+                  Styles.featureInfo,
+                  props.viewState.topElement === "FeatureInfo"
+                    ? "top-element"
+                    : "",
+                  {
+                    [Styles.featureInfoFullScreen]:
+                      props.viewState.isMapFullScreen
+                  }
+                )}
+                tabIndex={0}
+                onClick={action(() => {
+                  props.viewState.topElement = "FeatureInfo";
+                })}
+              >
+                <FeatureInfoPanel />
+              </div>
+              <DragDropFile />
+              <DragDropNotification />
+              {showStoryPanel && <StoryPanel />}
             </div>
-            <DragDropFile />
-            <DragDropNotification />
-            {showStoryPanel && <StoryPanel />}
+            {props.terria.configParameters.storyEnabled && showStoryBuilder && (
+              <StoryBuilder
+                isVisible={showStoryBuilder}
+                animationDuration={animationDuration}
+              />
+            )}
+            {props.viewState.showHelpMenu &&
+              props.viewState.topElement === "HelpPanel" && <HelpPanel />}
+            <Disclaimer />
           </div>
-          {props.terria.configParameters.storyEnabled && showStoryBuilder && (
-            <StoryBuilder
-              isVisible={showStoryBuilder}
-              animationDuration={animationDuration}
+          {props.viewState.printWindow && (
+            <PrintView
+              window={props.viewState.printWindow}
+              closeCallback={() => props.viewState.setPrintWindow(null)}
             />
           )}
-          {props.viewState.showHelpMenu &&
-            props.viewState.topElement === "HelpPanel" && <HelpPanel />}
-          <Disclaimer />
-        </div>
-        {props.viewState.printWindow && (
-          <PrintView
-            window={props.viewState.printWindow}
-            closeCallback={() => props.viewState.setPrintWindow(null)}
-          />
-        )}
-        <ClippingBoxToolLauncher viewState={props.viewState} />
-      </ContextProviders>
+          <ClippingBoxToolLauncher viewState={props.viewState} />
+        </ContextProviders>
+      </PromptContextProvider>
     );
   });
 

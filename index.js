@@ -21,6 +21,9 @@ import defined from "terriajs-cesium/Source/Core/defined";
 import loadPlugins from "./lib/Core/loadPlugins";
 import plugins from "./plugins";
 
+import CatalogMemberFactory from "terriajs/lib/Models/Catalog/CatalogMemberFactory"; // AIS, added  < ======================== all those imports
+import ArbormetaReference from "./lib/terriajsOverrides/ArbormetaReference";
+
 // Register all types of catalog members in the core TerriaJS.  If you only want to register a subset of them
 // (i.e. to reduce the size of your application if you don't actually use them all), feel free to copy a subset of
 // the code in the registerCatalogMembers function here instead.
@@ -48,6 +51,8 @@ const viewState = new ViewState({
 });
 
 registerCatalogMembers();
+CatalogMemberFactory.register(ArbormetaReference.type, ArbormetaReference); // AIS, added  < ======================== our own top-level group
+
 // Register custom search providers in the core TerriaJS. If you only want to register a subset of them, or to add your own,
 // insert your custom version of the code in the registerSearchProviders function here instead.
 registerSearchProviders();
@@ -69,7 +74,12 @@ module.exports = terria
     shareDataService: new ShareDataService({
       terria: terria
     }),
-    beforeRestoreAppState: () => {
+    beforeRestoreAppState: async () => {
+      // Check whether the page was loaded because a link in the web-app
+      // was clicked, and if yes, whether we have a session cookie.
+      // If yes, attempt to login via that Cookie BEFORE loading data.
+      await viewState.checkWebAppSession();
+
       // Load plugins before restoring app state because app state may
       // reference plugin components and catalog items.
       return loadPlugins(viewState, plugins).catch((error) => {

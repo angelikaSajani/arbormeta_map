@@ -7,21 +7,24 @@
 //       that only seems possible if we do NOT export ViewState_Arbm as the default
 // ================================================================================================================================================
 
-import {
-  action,
-  observable,
-  makeObservable,
-  computed,
-  runInAction
-} from "mobx";
-import { setCookie, removeCookie } from "typescript-cookie";
+import { action, observable, makeObservable, computed } from "mobx";
+import { getCookie, setCookie, removeCookie } from "typescript-cookie";
 
 import ViewState from "terriajs/lib/ReactViewModels/ViewState";
-import { sessionStorageDefined } from "../Additions/utils";
+import Catalog from "terriajs/lib/Models/Catalog/Catalog";
+import ArbormetaReference from "./ArbormetaReference";
+import { compareUris } from "../Additions/utils";
+import LoginManager from "../Additions/LoginManager";
 
 const SESSION_COOKIE_NAME = "sessionid";
+const ARBORMETA_GROUP_ID = "ArbormetaData";
 
 export class ViewState_Arbm extends ViewState {
+  sessionCookieAttributes = {
+    sameSite: "None",
+    secure: location.protocol === "https:"
+  };
+
   constructor(options: any /* ViewStateOptions */) {
     // ViewStateOptions is not exported by terriajs
     super(options);
@@ -29,31 +32,66 @@ export class ViewState_Arbm extends ViewState {
     makeObservable(this);
   }
 
-  @computed
   get treesAppUrl(): string {
     if (!this.terria || !this.terria.configParameters) return "";
     return this.terria.configParameters.feedbackUrl || "";
   }
 
+  get treesAppHost(): HostAndPort | null {
+    const withPath = this.terria.configParameters.feedbackUrl || "";
+    let result: HostAndPort | null = null;
+    if (withPath !== "") {
+      const url = new window.URL(withPath);
+      result = { hostname: url.hostname, port: 0 };
+      if (url.port) {
+        result.port = parseInt(url.port);
+      } else {
+        result.port = url.protocol === "https" ? 443 : 80;
+      }
+    }
+    return result;
+  }
+
   @observable loginData?: LoginData;
 
-  @action login(loginData: LoginData) {
+  @action async login(loginData: LoginData) {
     this.loginData = loginData;
-    setCookie(SESSION_COOKIE_NAME, loginData.sessionid, {
-      sameSite: "None",
-      secure: true
-    }); // no expiry -> session cookie
+
+    // for easy login on startup next time
+    localStorage.setItem("last_username", loginData.user.username);
+
+    setCookie(
+      SESSION_COOKIE_NAME,
+      loginData.sessionid,
+      //@ts-ignore
+      this.sessionCookieAttributes
+    ); // no expiry -> session cookie
+    LoginManager.configureTrustedServers(this);
+
+    await this.refreshArbormetaGroup();
   }
 
-  @action logout() {
-    removeCookie(SESSION_COOKIE_NAME);
+  removeCookies() {
+    //@ts-ignore
+    setCookie(SESSION_COOKIE_NAME, "logged-out", this.sessionCookieAttributes); // removeCookie did not work
+  }
+
+  @action async logout() {
+    this.removeCookies();
     this.loginData = undefined;
+    LoginManager.configureTrustedServers(this);
+    await this.refreshArbormetaGroup();
   }
 
-  //   @computed
-  //   get authTokenHeader(): string {
-  //     return this.loginData === undefined ? "" : "Token " + this.loginData.token;
-  //   }
+  @action async refreshArbormetaGroup() {
+    let catalog: Catalog = this.terria.catalog;
+    let arbmReference = catalog.group.memberModels.find(
+      (m) => m.uniqueId === ARBORMETA_GROUP_ID
+    );
+    if (arbmReference && arbmReference.type == ArbormetaReference.type) {
+      await (arbmReference as ArbormetaReference).loadReference(true);
+    }
+  }
 
   @computed
   get userBestName(): string {
@@ -70,7 +108,42 @@ export class ViewState_Arbm extends ViewState {
     let user = this.loginData.user!;
     return user.email;
   }
-}
+
+  /**
+   * To be called during startup, BEFORE data catalog is loaded and the page is rendered.
+   * Check whether the page got loaded because the user clicked a link
+   * in the ArborMeta web app, and if so, wether there was a logged in user
+   * (that is, we have a session cookie)
+   * If we do, attempt to log in (without user interaction) via that session cookie,
+   * but do not display an error if that does not work.
+   */
+  checkWebAppSession = async () => {
+    console.log("In checkWebAppSession()");
+
+    let referrer = document.referrer;
+    let appUrl = this.treesAppUrl;
+    // NOTE: no point testing for sessionid cookie, as under https
+    // the cookie is 'http-only', hence javascript can't see it.
+    if (referrer && appUrl && compareUris(referrer, appUrl)) {
+      console.log("Trying to login with cookie");
+      try {
+        let loginData: LoginData = await LoginManager.sendLoginRequest(
+          appUrl,
+          null,
+          null
+        );
+        console.log("Got login results");
+        this.loginData = loginData;
+        // for easy login on startup next time
+        localStorage.setItem("last_username", loginData.user.username);
+        LoginManager.configureTrustedServers(this);
+        console.log("Stored login results");
+      } catch {
+        console.log("Got login error");
+      }
+    }
+  };
+} // end of class ViewState_Arbm
 
 export interface User {
   username: string;
@@ -89,4 +162,9 @@ export interface LoginData {
 
 export interface WithViewState_Arbm {
   viewState: ViewState_Arbm;
+}
+
+export interface HostAndPort {
+  hostname: string;
+  port: number;
 }
