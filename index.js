@@ -51,7 +51,9 @@ const viewState = new ViewState({
 });
 
 registerCatalogMembers();
+console.log("About to register ArbormetaReference");
 CatalogMemberFactory.register(ArbormetaReference.type, ArbormetaReference); // AIS, added  < ======================== our own top-level group
+console.log("Did register ArbormetaReference");
 
 // Register custom search providers in the core TerriaJS. If you only want to register a subset of them, or to add your own,
 // insert your custom version of the code in the registerSearchProviders function here instead.
