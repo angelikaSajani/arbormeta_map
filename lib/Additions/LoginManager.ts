@@ -334,8 +334,6 @@ export default class LoginManager {
           port: djangoHost.port
         });
       }
-      console.log(`Trusted Host: ${servers[0].host}`);
-      console.log(`Trusted Port: ${servers[0].port}`);
       // If somebody is logged in, add to TrustedServers, otherwise remove
       let f = viewState.loginData ? TrustedServers.add : TrustedServers.remove;
       try {
