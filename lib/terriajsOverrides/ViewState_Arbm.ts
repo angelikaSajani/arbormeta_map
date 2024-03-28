@@ -48,6 +48,8 @@ export class ViewState_Arbm extends ViewState {
       } else {
         result.port = url.protocol === "https" ? 443 : 80;
       }
+      console.log(`treesAppHost.hostname: ${result.hostname}`);
+      console.log(`treesAppHost.port: ${result.port}`);
     }
     return result;
   }
