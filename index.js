@@ -39,18 +39,14 @@ if (process.env.NODE_ENV === "development") {
   terriaOptions.analytics = new GoogleAnalytics();
 }
 
-console.log(`process.env.NODE_ENV: ${process.env.NODE_ENV}`);
-for (const [key, value] of Object.entries(process.env)) {
-  console.log(`${key}: ${value}`);
-}
-
-// const s3_accessKeyId = process.env.REACT_S3_ACCESS_KEY_ID;
-// const s3_secretAccessKey = process.env.REACT_S3_SECRET_ACCESS_KEY;
-// const s3_count = process.env.REACT_S3_COUNT;
-// console.log(`process.env: ${process.env}`);
-// console.log(`s3_accessKeyId: ${s3_accessKeyId}`);
-// console.log(`s3_secretAccessKey: ${s3_secretAccessKey}`);
-// console.log(`s3_count: ${s3_count}`);
+const s3_accessKeyId = process.env.REACT_S3_ACCESS_KEY_ID;
+const s3_secretAccessKey = process.env.REACT_S3_SECRET_ACCESS_KEY;
+const s3_host = process.env.REACT_S3_HOST || "backblaze.com";
+const s3_region = process.env.REACT_S3_REGION;
+console.log(`s3_accessKeyId: ${s3_accessKeyId}`);
+console.log(`s3_secretAccessKey: ${s3_secretAccessKey}`);
+console.log(`s3_host: ${s3_host}`);
+console.log(`s3_region: ${s3_region}`);
 
 // Construct the TerriaJS application, arrange to show errors to the user, and start it up.
 var terria = new Terria(terriaOptions);
