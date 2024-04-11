@@ -34,3 +34,6 @@ package-lock.json
 .nvmrc
 .portainerstack.yml
 
+.env.local
+.env
+
