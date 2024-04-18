@@ -23,6 +23,7 @@ import plugins from "./plugins";
 
 import CatalogMemberFactory from "terriajs/lib/Models/Catalog/CatalogMemberFactory"; // AIS, added  < ======================== all those imports
 import ArbormetaReference from "./lib/terriajsOverrides/ArbormetaReference";
+// import Cesium3DTilesCatalogItem_Arbm from "./lib/terriajsOverrides/Cesium3DTiles/Cesium3DTilesCatalogItem_Arbm";
 
 // Register all types of catalog members in the core TerriaJS.  If you only want to register a subset of them
 // (i.e. to reduce the size of your application if you don't actually use them all), feel free to copy a subset of
@@ -39,14 +40,14 @@ if (process.env.NODE_ENV === "development") {
   terriaOptions.analytics = new GoogleAnalytics();
 }
 
-const s3_accessKeyId = process.env.REACT_S3_ACCESS_KEY_ID;
-const s3_secretAccessKey = process.env.REACT_S3_SECRET_ACCESS_KEY;
-const s3_host = process.env.REACT_S3_HOST || "backblaze.com";
-const s3_region = process.env.REACT_S3_REGION;
-console.log(`s3_accessKeyId: ${s3_accessKeyId}`);
-console.log(`s3_secretAccessKey: ${s3_secretAccessKey}`);
-console.log(`s3_host: ${s3_host}`);
-console.log(`s3_region: ${s3_region}`);
+// const s3_accessKeyId = process.env.REACT_S3_ACCESS_KEY_ID;
+// const s3_secretAccessKey = process.env.REACT_S3_SECRET_ACCESS_KEY;
+// const s3_host = process.env.REACT_S3_HOST || "backblaze.com";
+// const s3_region = process.env.REACT_S3_REGION;
+// console.log(`s3_accessKeyId: ${s3_accessKeyId}`);
+// console.log(`s3_secretAccessKey: ${s3_secretAccessKey}`);
+// console.log(`s3_host: ${s3_host}`);
+// console.log(`s3_region: ${s3_region}`);
 
 // Construct the TerriaJS application, arrange to show errors to the user, and start it up.
 var terria = new Terria(terriaOptions);
@@ -62,6 +63,10 @@ const viewState = new ViewState({
 
 registerCatalogMembers();
 CatalogMemberFactory.register(ArbormetaReference.type, ArbormetaReference); // AIS, added  < ======================== our own top-level group
+// CatalogMemberFactory.register(
+//   Cesium3DTilesCatalogItem_Arbm.type,
+//   Cesium3DTilesCatalogItem_Arbm
+// ); // AIS, added  < ======================== for the moment only for debugging
 
 // Register custom search providers in the core TerriaJS. If you only want to register a subset of them, or to add your own,
 // insert your custom version of the code in the registerSearchProviders function here instead.

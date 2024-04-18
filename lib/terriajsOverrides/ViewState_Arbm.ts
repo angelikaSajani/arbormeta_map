@@ -20,16 +20,19 @@ const SESSION_COOKIE_NAME = "sessionid";
 const ARBORMETA_GROUP_ID = "ArbormetaData";
 
 export class ViewState_Arbm extends ViewState {
-  sessionCookieAttributes = {
-    sameSite: "None",
-    secure: location.protocol === "https:"
-  };
-
   constructor(options: any /* ViewStateOptions */) {
     // ViewStateOptions is not exported by terriajs
     super(options);
 
     makeObservable(this);
+  }
+
+  get sessionCookieAttributes() {
+    return {
+      sameSite: "None",
+      secure: location.protocol === "https:",
+      domain: this.treesAppHost!.hostname
+    };
   }
 
   get treesAppUrl(): string {
@@ -118,6 +121,7 @@ export class ViewState_Arbm extends ViewState {
    * but do not display an error if that does not work.
    */
   checkWebAppSession = async () => {
+    debugger;
     let referrer = document.referrer;
     let appUrl = this.treesAppUrl;
     // NOTE: no point testing for sessionid cookie, as under https
