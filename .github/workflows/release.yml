@@ -27,15 +27,15 @@ jobs:
         with:
           # list of Docker images to use as base name for tags
           images: |
-            ghcr.io/angelikasajani/arbormeta_map:latest
+            ghcr.io/angelikasajani/arbormeta_map
+            flavor: |
+                latest=true
           # generate Docker tags based on the following events/attributes
           tags: |
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
             type=sha
-            flavor: |
-                latest=auto
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -55,4 +55,4 @@ jobs:
         with:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          push: true
+          push: false
