@@ -72,9 +72,10 @@ CatalogMemberFactory.register(ArbormetaReference.type, ArbormetaReference); // A
 // insert your custom version of the code in the registerSearchProviders function here instead.
 registerSearchProviders();
 
-if (process.env.NODE_ENV === "development") {
-  window.viewState = viewState;
-}
+// TBR!!!!! remove commented out if-clause
+// if (process.env.NODE_ENV === "development") {
+window.viewState = viewState;
+// }
 
 // If we're running in dev mode, disable the built style sheet as we'll be using the webpack style loader.
 // Note that if the first stylesheet stops being nationalmap.css then this will have to change.
