@@ -121,19 +121,21 @@ export class ViewState_Arbm extends ViewState {
    * but do not display an error if that does not work.
    */
   checkWebAppSession = async () => {
+    console.log("Now inside checkWebAppSession()");
+
     let referrer = document.referrer;
     console.log(`Referrer: ${document.referrer}`);
     let appUrl = this.treesAppUrl;
     console.log(`appUrl: ${appUrl}`);
 
     console.log(
-      `compareUris(referrer, appUrl): ${compareUris(referrer, appUrl)}`
+      `  compareUris(referrer, appUrl): ${compareUris(referrer, appUrl)}`
     );
 
     // NOTE: no point testing for sessionid cookie, as under https
     // the cookie is 'http-only', hence javascript can't see it.
     if (referrer && appUrl && compareUris(referrer, appUrl)) {
-      console.log("about to send login request");
+      console.log("  about to send login request");
       try {
         let loginData: LoginData = await LoginManager.sendLoginRequest(
           appUrl,
@@ -144,7 +146,9 @@ export class ViewState_Arbm extends ViewState {
         // for easy login on startup next time
         localStorage.setItem("last_username", loginData.user.username);
         LoginManager.configureTrustedServers(this);
-      } catch {}
+      } catch (e) {
+        console.log(`Caught error: ${e}`);
+      }
     }
   };
 } // end of class ViewState_Arbm

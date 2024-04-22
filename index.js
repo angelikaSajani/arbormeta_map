@@ -40,6 +40,8 @@ if (process.env.NODE_ENV === "development") {
   terriaOptions.analytics = new GoogleAnalytics();
 }
 
+console.log("TerriaMap is starting up");
+
 // const s3_accessKeyId = process.env.REACT_S3_ACCESS_KEY_ID;
 // const s3_secretAccessKey = process.env.REACT_S3_SECRET_ACCESS_KEY;
 // const s3_host = process.env.REACT_S3_HOST || "backblaze.com";
@@ -83,6 +85,8 @@ if (process.env.NODE_ENV !== "production" && module.hot) {
   document.styleSheets[0].disabled = true;
 }
 
+console.log("About to call terria.start(...)");
+
 module.exports = terria
   .start({
     applicationUrl: window.location,
@@ -94,6 +98,8 @@ module.exports = terria
       // Check whether the page was loaded because a link in the web-app
       // was clicked, and if yes, whether we have a session cookie.
       // If yes, attempt to login via that Cookie BEFORE loading data.
+      console.log("About to call checkWebAppSession(...)");
+
       await viewState.checkWebAppSession();
 
       // Load plugins before restoring app state because app state may
