@@ -151,11 +151,15 @@ export default class DjangoComms {
     // For POST requests to work we generally need a csrf token in the headers
     // This is stored in a cookie, if we haven't got it yet we have to request one.
     if (_options.enforceCsrf || _options.method! == "POST") {
+      const djangoDomain = DjangoComms.getDjangoDomain(baseURL);
       let cookieOptions = {
         sameSite: "None",
         secure: true,
-        domain: DjangoComms.getDjangoDomain(baseURL)
+        domain: djangoDomain.includes("arbormeta.earth")
+          ? ".arbormeta.earth"
+          : djangoDomain
       };
+      console.log(`cookieOptions.domain: ${cookieOptions.domain}`);
 
       let crsfToken = getCookie(DjangoComms.CSRF_COOKIE_NAME);
       if (!crsfToken) {

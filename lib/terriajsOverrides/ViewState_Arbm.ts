@@ -28,10 +28,13 @@ export class ViewState_Arbm extends ViewState {
   }
 
   get sessionCookieAttributes() {
+    const hostname = this.treesAppHost!.hostname;
     return {
       sameSite: "None",
       secure: location.protocol === "https:",
-      domain: this.treesAppHost!.hostname
+      domain: hostname.includes("arbormeta.earth")
+        ? ".arbormeta.earth"
+        : hostname
     };
   }
 
