@@ -32,7 +32,7 @@ export class ViewState_Arbm extends ViewState {
     return {
       sameSite: "None",
       secure: location.protocol === "https:",
-      domain: hostname.includes("arbormeta.earth")
+      domain: hostname.includes("arbormeta.earth") // remove subdomain if there is one; TBC: we need to find a BETTER WAY
         ? ".arbormeta.earth"
         : hostname
     };

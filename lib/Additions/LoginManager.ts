@@ -260,6 +260,10 @@ export default class LoginManager {
     let clientData = JSON.parse(
       EncodingUtilities.arrayBufferToString(assertationResponse.clientDataJSON)
     );
+    let expected_rp_id = window.location.hostname;
+    if (expected_rp_id.includes("arbormeta.earth")) {
+      expected_rp_id = "arbormeta.earth"; // remove subdomain if there is one; TBC: we need to find a BETTER WAY
+    }
 
     let expectedChallenge = new Uint8Array(parameters.challenge as ArrayBuffer); // parameters.challenge is a buffer
     let receivedChallenge = new Uint8Array(
@@ -300,7 +304,7 @@ export default class LoginManager {
       expected_challenge: EncodingUtilities.base64_encode_arrayBuffer_urlsafe(
         parameters.challenge as ArrayBuffer
       ),
-      expected_rp_id: window.location.hostname, // server will also check this against constant BASE_URL
+      expected_rp_id: expected_rp_id, // server will also check this against constant settings.SITE_HOST
       expected_origin: window.location.protocol + "//" + window.location.host
     };
   };

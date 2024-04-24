@@ -155,7 +155,7 @@ export default class DjangoComms {
       let cookieOptions = {
         sameSite: "None",
         secure: true,
-        domain: djangoDomain.includes("arbormeta.earth")
+        domain: djangoDomain.includes("arbormeta.earth") // remove subdomain if there is one; TBC: we need to find a BETTER WAY
           ? ".arbormeta.earth"
           : djangoDomain
       };
