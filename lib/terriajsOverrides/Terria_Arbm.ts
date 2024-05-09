@@ -10,6 +10,7 @@ import queryToObject from "terriajs-cesium/Source/Core/queryToObject";
 import defined from "terriajs-cesium/Source/Core/defined";
 
 import Terria from "terriajs/lib/Models/Terria";
+import User from "../Additions/LoginManager";
 import TerriaError, {
   TerriaErrorOverrides,
   TerriaErrorSeverity
@@ -31,34 +32,80 @@ export class Terria_Arbm extends Terria {
    *
    * @param forceRaiseToUser - which can be used to force raise the error
    */
-  raiseErrorToUser(
-    error: unknown,
-    overrides?: TerriaErrorOverrides,
-    forceRaiseToUser = false
-  ) {
-    if (forceRaiseToUser === undefined) {
-      forceRaiseToUser = false;
-    }
-    if (error || forceRaiseToUser) {
-      console.error(`Raising error: ${error || "forced error"}`);
-    }
-    super.raiseErrorToUser(error, overrides, forceRaiseToUser);
+
+  private _loggedInUser: User | null = null;
+  private _urlWithoutHash: string;
+  private _originalHash: string;
+  private _privilegedDataInHash: boolean;
+
+  constructor() {
+    super();
+    const uri = new URI(window.location);
+    this._originalHash = uri.hash();
+    this._urlWithoutHash = uri.hash("").toString();
+    this._privilegedDataInHash = Terria_Arbm._hasPrivilegedCatalogItems(
+      this._originalHash
+    );
   }
 
+  async userLoggedIn(user: User) {
+    console.log("user LoggedI n");
+    this._loggedInUser = user;
+    await this._updateUrl();
+  }
+
+  async userLoggedOut() {
+    console.log("user Logged Out");
+    this._loggedInUser = null;
+    await this._updateUrl();
+  }
+
+  private async _updateUrl() {
+    // We are doing pretty much the same as what Terria does when the hash of the url changes
+    // ( see lib/ViewModels/updateApplicationOnHashChange.ts )
+    // But not need to call loadInitSources, because they won't have changed
+    try {
+      console.log("In updateUrl");
+      debugger;
+      let uri = new URI(this._urlWithoutHash);
+      if (this._loggedInUser) {
+        uri.hash(this._originalHash);
+      }
+      (await this.updateApplicationUrl(uri.toString())).throwIfError();
+    } catch (e) {
+      this.raiseErrorToUser(e);
+    }
+  }
+
+  private static _hasPrivilegedCatalogItems(hash: string): boolean {
+    const hashProperties = queryToObject(hash);
+    // TBC
+    return true;
+  }
+
+  // Override, which removes the hash from newUrl if
+  // a) no user is logged in    AND
+  // b) the hash in newUrl references any ArborMeta data which require login (privileged)
   async updateApplicationUrl(newUrl: string) {
     console.log(`Entering updateApplicationUrl(${newUrl})`);
-    const uri = new URI(newUrl);
-    const hash = uri.fragment();
-    const hashProperties = queryToObject(hash);
-    console.log(`Finished updateApplicationUrl(${hashProperties})`);
 
-    let urlForNow = newUrl;
-    if (hash !== "") {
-      console.log(`Changing to plain url`);
-      urlForNow = uri.protocol() + "://" + uri.host() + "/"; // host includes port if explicitly specified
-    }
+    let urlToUse: string = newUrl;
+    let uri = new URI(newUrl);
+    let hash: string = uri.hash();
 
     debugger;
-    return super.updateApplicationUrl(urlForNow);
+    if (hash) {
+      if (
+        this._loggedInUser == null &&
+        Terria_Arbm._hasPrivilegedCatalogItems(hash)
+      ) {
+        console.log(`Changing to url without hash`);
+        urlToUse = uri.hash("").toString(); // test to see whether the two produce the same result? This implementation more robust
+      }
+    }
+
+    console.log(`urlToUse: ${urlToUse}`);
+    debugger;
+    return super.updateApplicationUrl(urlToUse);
   }
 }

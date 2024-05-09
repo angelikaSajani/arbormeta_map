@@ -11,6 +11,7 @@ import ShareDataService from "terriajs/lib/Models/ShareDataService";
 // import registerAnalytics from 'terriajs/lib/Models/registerAnalytics';
 import registerCustomComponentTypes from "terriajs/lib/ReactViews/Custom/registerCustomComponentTypes";
 // import Terria from "terriajs/lib/Models/Terria";
+//@ts-ignore
 import { Terria_Arbm as Terria } from "./lib/terriajsOverrides/Terria_Arbm";
 import updateApplicationOnHashChange from "terriajs/lib/ViewModels/updateApplicationOnHashChange";
 import updateApplicationOnMessageFromParentWindow from "terriajs/lib/ViewModels/updateApplicationOnMessageFromParentWindow";

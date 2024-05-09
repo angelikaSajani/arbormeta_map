@@ -1,6 +1,5 @@
 import { t } from "i18next";
 
-import { LoginData } from "../terriajsOverrides/ViewState_Arbm";
 import DjangoComms from "./DjangoComms";
 import EncodingUtilities from "./EncodingUtilities";
 import { ViewState_Arbm as ViewState } from "../terriajsOverrides/ViewState_Arbm";
@@ -11,6 +10,21 @@ import {
   CustomAuthenticationError,
   CustomNetworkError
 } from "./custom-errors";
+
+export interface User {
+  username: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  is_staff: boolean;
+  is_superuser: boolean;
+  permissions: Array<string>;
+}
+
+export interface LoginData {
+  user: User;
+  sessionid: string;
+}
 
 /**
  * We receive a list of these when retrieving {@link AuthParameters} for a user.
