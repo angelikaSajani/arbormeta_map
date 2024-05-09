@@ -8,13 +8,14 @@
 // ================================================================================================================================================
 
 import { action, observable, makeObservable, computed } from "mobx";
-import { getCookie, setCookie, removeCookie } from "typescript-cookie";
+import { setCookie } from "typescript-cookie";
 
 import ViewState from "terriajs/lib/ReactViewModels/ViewState";
 import Catalog from "terriajs/lib/Models/Catalog/Catalog";
 import ArbormetaReference from "./ArbormetaReference";
 import { compareUris } from "../Additions/utils";
-import LoginManager from "../Additions/LoginManager";
+import LoginManager, { LoginData } from "../Additions/LoginManager";
+import { Terria_Arbm } from "./Terria_arbm";
 
 const SESSION_COOKIE_NAME = "sessionid";
 const ARBORMETA_GROUP_ID = "ArbormetaData";
@@ -75,6 +76,8 @@ export class ViewState_Arbm extends ViewState {
     LoginManager.configureTrustedServers(this);
 
     await this.refreshArbormetaGroup();
+
+    await (this.terria as Terria_Arbm).userLoggedIn(loginData.user);
   }
 
   removeCookies() {
@@ -86,6 +89,7 @@ export class ViewState_Arbm extends ViewState {
     this.removeCookies();
     this.loginData = undefined;
     LoginManager.configureTrustedServers(this);
+    await (this.terria as Terria_Arbm).userLoggedOut();
     await this.refreshArbormetaGroup();
   }
 
@@ -124,21 +128,12 @@ export class ViewState_Arbm extends ViewState {
    * but do not display an error if that does not work.
    */
   checkWebAppSession = async () => {
-    console.log("Now inside checkWebAppSession()");
-
     let referrer = document.referrer;
-    console.log(`Referrer: ${document.referrer}`);
     let appUrl = this.treesAppUrl;
-    console.log(`appUrl: ${appUrl}`);
-
-    console.log(
-      `  compareUris(referrer, appUrl): ${compareUris(referrer, appUrl)}`
-    );
 
     // NOTE: no point testing for sessionid cookie, as under https
     // the cookie is 'http-only', hence javascript can't see it.
     if (referrer && appUrl && compareUris(referrer, appUrl)) {
-      console.log("  about to send login request");
       try {
         let loginData: LoginData = await LoginManager.sendLoginRequest(
           appUrl,
@@ -150,26 +145,13 @@ export class ViewState_Arbm extends ViewState {
         localStorage.setItem("last_username", loginData.user.username);
         LoginManager.configureTrustedServers(this);
       } catch (e) {
-        console.log(`Caught error: ${e}`);
+        console.error(
+          `Caught error when trying to log in automatically from Django App: ${e}`
+        );
       }
     }
   };
 } // end of class ViewState_Arbm
-
-export interface User {
-  username: string;
-  first_name: string;
-  last_name: string;
-  email: string;
-  is_staff: boolean;
-  is_superuser: boolean;
-  permissions: Array<string>;
-}
-
-export interface LoginData {
-  user: User;
-  sessionid: string;
-}
 
 export interface WithViewState_Arbm {
   viewState: ViewState_Arbm;

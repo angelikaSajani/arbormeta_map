@@ -343,6 +343,7 @@ function Cesium3dTilesMixin<T extends AbstractConstructor<BaseType>>(Base: T) {
     }
 
     private createResourceFromUrl(url: Resource | string) {
+      console.log("abc");
       if (!isDefined(url)) {
         return;
       }
