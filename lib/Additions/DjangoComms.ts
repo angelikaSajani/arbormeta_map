@@ -159,7 +159,6 @@ export default class DjangoComms {
           ? ".arbormeta.earth"
           : djangoDomain
       };
-      console.log(`cookieOptions.domain: ${cookieOptions.domain}`);
 
       let crsfToken = getCookie(DjangoComms.CSRF_COOKIE_NAME);
       if (!crsfToken) {

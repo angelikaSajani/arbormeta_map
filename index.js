@@ -100,7 +100,6 @@ module.exports = terria
       // Check whether the page was loaded because a link in the web-app
       // was clicked, and if yes, whether we have a session cookie.
       // If yes, attempt to login via that Cookie BEFORE loading data.
-      console.log("About to call checkWebAppSession(...)");
 
       await viewState.checkWebAppSession();
 
