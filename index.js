@@ -10,7 +10,8 @@ import GoogleAnalytics from "terriajs/lib/Core/GoogleAnalytics";
 import ShareDataService from "terriajs/lib/Models/ShareDataService";
 // import registerAnalytics from 'terriajs/lib/Models/registerAnalytics';
 import registerCustomComponentTypes from "terriajs/lib/ReactViews/Custom/registerCustomComponentTypes";
-import Terria from "terriajs/lib/Models/Terria";
+// import Terria from "terriajs/lib/Models/Terria";
+import { Terria_Arbm as Terria } from "./lib/terriajsOverrides/Terria_Arbm";
 import updateApplicationOnHashChange from "terriajs/lib/ViewModels/updateApplicationOnHashChange";
 import updateApplicationOnMessageFromParentWindow from "terriajs/lib/ViewModels/updateApplicationOnMessageFromParentWindow";
 import { ViewState_Arbm as ViewState } from "./lib/terriajsOverrides/ViewState_Arbm";
@@ -85,7 +86,7 @@ if (process.env.NODE_ENV !== "production" && module.hot) {
   document.styleSheets[0].disabled = true;
 }
 
-console.log("About to call terria.start(...)");
+// http://localhost:3002/#start=%7B%22version%22%3A%228.0.0%22%2C%22initSources%22%3A%5B%7B%22stratum%22%3A%22user%22%2C%22models%22%3A%7B%22cEynH3ca%22%3A%7B%22dereferenced%22%3A%7B%22isOpen%22%3Atrue%7D%2C%22knownContainerUniqueIds%22%3A%5B%22Root+Group%2FNational+Data+Sets%22%5D%2C%22type%22%3A%22terria-reference%22%7D%2C%22zaSvrVue%22%3A%7B%22opacity%22%3A0.73%2C%22knownContainerUniqueIds%22%3A%5B%22cEynH3ca%22%5D%2C%22type%22%3A%22esri-mapServer%22%7D%2C%22%2F%22%3A%7B%22type%22%3A%22group%22%7D%2C%22Root+Group%2FNational+Data+Sets%22%3A%7B%22knownContainerUniqueIds%22%3A%5B%22%2F%22%5D%2C%22type%22%3A%22group%22%7D%7D%2C%22workbench%22%3A%5B%22zaSvrVue%22%5D%2C%22timeline%22%3A%5B%22zaSvrVue%22%5D%2C%22initialCamera%22%3A%7B%22west%22%3A104.45065391410617%2C%22south%22%3A-37.69123526967361%2C%22east%22%3A151.52589564426904%2C%22north%22%3A-23.097982602197575%2C%22position%22%3A%7B%22x%22%3A-5252677.800293835%2C%22y%22%3A6725957.693319678%2C%22z%22%3A-5384520.226419353%7D%2C%22direction%22%3A%7B%22x%22%3A0.5192125308652523%2C%22y%22%3A-0.6648421337105099%2C%22z%22%3A0.5370319218033095%7D%2C%22up%22%3A%7B%22x%22%3A-0.3305432550409885%2C%22y%22%3A0.42325458247095726%2C%22z%22%3A0.8435619212388878%7D%7D%2C%22homeCamera%22%3A%7B%22west%22%3A144.657%2C%22south%22%3A-29.535%2C%22east%22%3A144.82%2C%22north%22%3A-29.34%7D%2C%22viewerMode%22%3A%223d%22%2C%22showSplitter%22%3Afalse%2C%22splitPosition%22%3A0.4999%2C%22settings%22%3A%7B%22baseMaximumScreenSpaceError%22%3A2%2C%22useNativeResolution%22%3Afalse%2C%22alwaysShowTimeline%22%3Afalse%2C%22baseMapId%22%3A%22basemap-bing-aerial-with-labels%22%2C%22terrainSplitDirection%22%3A0%2C%22depthTestAgainstTerrainEnabled%22%3Afalse%7D%2C%22stories%22%3A%5B%5D%7D%5D%7D
 
 module.exports = terria
   .start({

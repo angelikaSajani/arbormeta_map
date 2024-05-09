@@ -26,7 +26,7 @@ export default class Cesium3DTilesCatalogItem_Arbm extends SearchableItemMixin(
     Cesium3dTilesMixin(CreateModel(Cesium3DTilesCatalogItemTraits))
   )
 ) {
-  static readonly type = "3d-tiles-a";
+  static readonly type = "3d-tiles";
   readonly type = Cesium3DTilesCatalogItem_Arbm.type;
 
   constructor(...args: ModelConstructorParameters) {
