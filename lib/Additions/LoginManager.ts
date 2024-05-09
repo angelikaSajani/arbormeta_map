@@ -1,6 +1,5 @@
 import { t } from "i18next";
 
-import { LoginData } from "../terriajsOverrides/ViewState_Arbm";
 import DjangoComms from "./DjangoComms";
 import EncodingUtilities from "./EncodingUtilities";
 import { ViewState_Arbm as ViewState } from "../terriajsOverrides/ViewState_Arbm";
@@ -11,6 +10,21 @@ import {
   CustomAuthenticationError,
   CustomNetworkError
 } from "./custom-errors";
+
+export interface User {
+  username: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  is_staff: boolean;
+  is_superuser: boolean;
+  permissions: Array<string>;
+}
+
+export interface LoginData {
+  user: User;
+  sessionid: string;
+}
 
 /**
  * We receive a list of these when retrieving {@link AuthParameters} for a user.
@@ -260,6 +274,10 @@ export default class LoginManager {
     let clientData = JSON.parse(
       EncodingUtilities.arrayBufferToString(assertationResponse.clientDataJSON)
     );
+    let expected_rp_id = window.location.hostname;
+    if (expected_rp_id.includes("arbormeta.earth")) {
+      expected_rp_id = "arbormeta.earth"; // remove subdomain if there is one; TBC: we need to find a BETTER WAY
+    }
 
     let expectedChallenge = new Uint8Array(parameters.challenge as ArrayBuffer); // parameters.challenge is a buffer
     let receivedChallenge = new Uint8Array(
@@ -300,7 +318,7 @@ export default class LoginManager {
       expected_challenge: EncodingUtilities.base64_encode_arrayBuffer_urlsafe(
         parameters.challenge as ArrayBuffer
       ),
-      expected_rp_id: window.location.hostname, // server will also check this against constant BASE_URL
+      expected_rp_id: expected_rp_id, // server will also check this against constant settings.SITE_HOST
       expected_origin: window.location.protocol + "//" + window.location.host
     };
   };

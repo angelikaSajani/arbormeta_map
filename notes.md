@@ -27,21 +27,12 @@ But, we may want to introduce our own subclass of `CatalogGroup`, analogous to i
 
 # Auto Login - NOT POSSIBLE
 
-_<mark>Not possible to log in BEFORE the catalog is loaded</mark>, because the React environment does not exist at that stage._
+_<mark>Not possible to interactively log in BEFORE the catalog is loaded</mark>, because the React environment does not exist at that stage._
 
 BUT:
 
-- [ ] remove session cookie and csrf cookie on startup. While the cookies are session-cookies and should disabppear when reloading the page, on Chrome they don't always do.
-
----
-
-- [x] Store username in LocalStorage ~~~(initially for dongled user only)~~~
-- [x] Isolate functionality in LoginManager as much as possible (extract from LoginPanel)
-- [ ] On startup, confirm whether user wants to login with previous username (yes/no only initially)
-- [ ] If yes, fetch user data from server, if successful prompt for authentication and login (using LoginManager)
-- [ ] Eventually offer same ability for un-dongled users
-  - [ ] Allow user to change username in initial dialog
-  - [ ] Allow user to enter password if he does not have a dongle
+Detect that we have a session-cookie (and checking referer) and request user info from Django server simply by virtu of session cookie ->
+we can log in automatically if user clicked link from Django web app to Terria Map app.
 
 # Run internally on port 3002 <mark>Done</mark>
 

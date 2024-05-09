@@ -39,6 +39,12 @@
     "videoUrl": "https://www.youtube-nocookie.com/embed/FjSxaviSLhc",
     "placeholderImage": "https://img.youtube.com/vi/FjSxaviSLhc/maxresdefault.jpg"
   },
+  "shareData": {
+    "loginWarning": {
+      "title": "It seems you used a Share-Link and are not logged in",
+      "message": "Some of the data referenced by that link are available only to subscribed ArborMeta users, therefore no data are shown on the map at the moment.<br><br><strong>You need to log in to </strong><ul><li>see these data,</li><li>load the ArborMeta data catalog, and</li><li>access any stories embedded in the Share-Link.</li></ul>"
+    }
+  },
   "stepbystepguide": {
     "title": "Step by step guide",
     "markdownText": "## Step by step guide\n\nLaunch a step by step guide for various popular workflows below:",

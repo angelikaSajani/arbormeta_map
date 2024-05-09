@@ -8,28 +8,35 @@
 // ================================================================================================================================================
 
 import { action, observable, makeObservable, computed } from "mobx";
-import { getCookie, setCookie, removeCookie } from "typescript-cookie";
+import { setCookie } from "typescript-cookie";
 
 import ViewState from "terriajs/lib/ReactViewModels/ViewState";
 import Catalog from "terriajs/lib/Models/Catalog/Catalog";
 import ArbormetaReference from "./ArbormetaReference";
 import { compareUris } from "../Additions/utils";
-import LoginManager from "../Additions/LoginManager";
+import LoginManager, { LoginData } from "../Additions/LoginManager";
+import { Terria_Arbm } from "./Terria_arbm";
 
 const SESSION_COOKIE_NAME = "sessionid";
 const ARBORMETA_GROUP_ID = "ArbormetaData";
 
 export class ViewState_Arbm extends ViewState {
-  sessionCookieAttributes = {
-    sameSite: "None",
-    secure: location.protocol === "https:"
-  };
-
   constructor(options: any /* ViewStateOptions */) {
     // ViewStateOptions is not exported by terriajs
     super(options);
 
     makeObservable(this);
+  }
+
+  get sessionCookieAttributes() {
+    const hostname = this.treesAppHost!.hostname;
+    return {
+      sameSite: "None",
+      secure: location.protocol === "https:",
+      domain: hostname.includes("arbormeta.earth") // remove subdomain if there is one; TBC: we need to find a BETTER WAY
+        ? ".arbormeta.earth"
+        : hostname
+    };
   }
 
   get treesAppUrl(): string {
@@ -69,6 +76,8 @@ export class ViewState_Arbm extends ViewState {
     LoginManager.configureTrustedServers(this);
 
     await this.refreshArbormetaGroup();
+
+    await (this.terria as Terria_Arbm).userLoggedIn(loginData.user);
   }
 
   removeCookies() {
@@ -80,6 +89,7 @@ export class ViewState_Arbm extends ViewState {
     this.removeCookies();
     this.loginData = undefined;
     LoginManager.configureTrustedServers(this);
+    await (this.terria as Terria_Arbm).userLoggedOut();
     await this.refreshArbormetaGroup();
   }
 
@@ -120,6 +130,7 @@ export class ViewState_Arbm extends ViewState {
   checkWebAppSession = async () => {
     let referrer = document.referrer;
     let appUrl = this.treesAppUrl;
+
     // NOTE: no point testing for sessionid cookie, as under https
     // the cookie is 'http-only', hence javascript can't see it.
     if (referrer && appUrl && compareUris(referrer, appUrl)) {
@@ -133,25 +144,14 @@ export class ViewState_Arbm extends ViewState {
         // for easy login on startup next time
         localStorage.setItem("last_username", loginData.user.username);
         LoginManager.configureTrustedServers(this);
-      } catch {}
+      } catch (e) {
+        console.error(
+          `Caught error when trying to log in automatically from Django App: ${e}`
+        );
+      }
     }
   };
 } // end of class ViewState_Arbm
-
-export interface User {
-  username: string;
-  first_name: string;
-  last_name: string;
-  email: string;
-  is_staff: boolean;
-  is_superuser: boolean;
-  permissions: Array<string>;
-}
-
-export interface LoginData {
-  user: User;
-  sessionid: string;
-}
 
 export interface WithViewState_Arbm {
   viewState: ViewState_Arbm;

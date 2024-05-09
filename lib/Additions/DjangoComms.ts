@@ -7,7 +7,6 @@ import {
   CustomNetworkError,
   CustomInvalidResponse
 } from "./custom-errors";
-import { createReturn } from "typescript";
 
 /**
  * - method: http verb, default 'GET'
@@ -152,6 +151,15 @@ export default class DjangoComms {
     // For POST requests to work we generally need a csrf token in the headers
     // This is stored in a cookie, if we haven't got it yet we have to request one.
     if (_options.enforceCsrf || _options.method! == "POST") {
+      const djangoDomain = DjangoComms.getDjangoDomain(baseURL);
+      let cookieOptions = {
+        sameSite: "None",
+        secure: true,
+        domain: djangoDomain.includes("arbormeta.earth") // remove subdomain if there is one; TBC: we need to find a BETTER WAY
+          ? ".arbormeta.earth"
+          : djangoDomain
+      };
+
       let crsfToken = getCookie(DjangoComms.CSRF_COOKIE_NAME);
       if (!crsfToken) {
         crsfToken = await DjangoComms.getCsrfToken(baseURL, combinedSignal);
@@ -159,10 +167,8 @@ export default class DjangoComms {
           throw Error(
             `Unable to acquire CRSF Token for API call to ${urlTail}`
           );
-        setCookie(DjangoComms.CSRF_COOKIE_NAME, crsfToken, {
-          sameSite: "None",
-          secure: true
-        }); // no expiry -> session cookie
+        //@ts-ignore
+        setCookie(DjangoComms.CSRF_COOKIE_NAME, crsfToken, cookieOptions); // no expiry -> session cookie
       }
       headers[DjangoComms.CSRF_HEADER_NAME] = crsfToken;
     }
@@ -253,5 +259,11 @@ export default class DjangoComms {
       //@ts-ignore
       typeof AbortSignal.timeout === "function"
     );
+  };
+
+  // -------------------------------------------------------------------------------------
+  private static getDjangoDomain = (baseUrl: string): string => {
+    const url = new window.URL(baseUrl);
+    return url.hostname;
   };
 }

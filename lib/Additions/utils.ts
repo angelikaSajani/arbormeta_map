@@ -11,6 +11,8 @@ import { ViewState_Arbm as ViewState } from "../terriajsOverrides/ViewState_Arbm
  * @param uri2
  */
 export function compareUris(uri1: string, uri2: string): boolean {
+  if (!uri1 || !uri2) return false;
+
   const url1 = new window.URL(uri1);
   const url2 = new window.URL(uri2);
 
