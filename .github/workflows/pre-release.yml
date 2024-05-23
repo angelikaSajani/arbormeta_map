@@ -29,9 +29,10 @@ jobs:
           images: |
             ghcr.io/angelikasajani/arbormeta_map_preprod
           # generate Docker tags based on the following events/attributes
-          tags: |
-            type=semver,pattern={{version}}
-            type=sha
+          # commented out because otherwise we dont
+          #   tags: |
+          #     type=semver,pattern={{version}}
+          #     type=sha
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
