@@ -1,6 +1,7 @@
 import { t } from "i18next";
 
 import DjangoComms from "./DjangoComms";
+import { getMainDomain } from "./utils";
 import EncodingUtilities from "./EncodingUtilities";
 import { ViewState_Arbm as ViewState } from "../terriajsOverrides/ViewState_Arbm";
 import TrustedServers from "terriajs-cesium/Source/Core/TrustedServers";
@@ -274,10 +275,7 @@ export default class LoginManager {
     let clientData = JSON.parse(
       EncodingUtilities.arrayBufferToString(assertationResponse.clientDataJSON)
     );
-    let expected_rp_id = window.location.hostname;
-    if (expected_rp_id.includes("arbormeta.earth")) {
-      expected_rp_id = "arbormeta.earth"; // remove subdomain if there is one; TBC: we need to find a BETTER WAY
-    }
+    let expected_rp_id = getMainDomain(window.location.hostname); // remove subdomain if there is one
 
     let expectedChallenge = new Uint8Array(parameters.challenge as ArrayBuffer); // parameters.challenge is a buffer
     let receivedChallenge = new Uint8Array(
