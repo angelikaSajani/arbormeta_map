@@ -15,6 +15,7 @@ import Catalog from "terriajs/lib/Models/Catalog/Catalog";
 import ArbormetaReference from "./ArbormetaReference";
 import { compareUris } from "../Additions/utils";
 import LoginManager, { LoginData } from "../Additions/LoginManager";
+import { getCookieDomain } from "../Additions/utils";
 import { Terria_Arbm } from "./Terria_arbm";
 
 const SESSION_COOKIE_NAME = "sessionid";
@@ -33,9 +34,7 @@ export class ViewState_Arbm extends ViewState {
     return {
       sameSite: "None",
       secure: location.protocol === "https:",
-      domain: hostname.includes("arbormeta.earth") // remove subdomain if there is one; TBC: we need to find a BETTER WAY
-        ? ".arbormeta.earth"
-        : hostname
+      domain: getCookieDomain(hostname)
     };
   }
 

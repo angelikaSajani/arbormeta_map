@@ -1,6 +1,42 @@
 import { ViewState_Arbm as ViewState } from "../terriajsOverrides/ViewState_Arbm";
 
 // ---------------------------------------------------------------------------------------------------
+// This section deals with issues relating to domain names and cookies
+// in regard to the DjangoApp and this app working will together.
+// ---------------------------------------------------------------------------------------------------
+
+export const KNOWN_DOMAIN_NAMES = ["arbormeta.earth", "arbormeta.world"];
+
+/**
+ * @param givenDomain
+ * @result If `givenHostName` contains one of the known host names
+ *         it returns that known host name prefixed by .
+ *         This is the required syntax for specifying the domain
+ *         for a cookie that is to be shared between a main domain and subdomain
+ *         (i.e. 'arbormeta.earth' and 'db.arbormeta.earth')
+ *         Otherwise it returns `givenHostName`, which likely is 'localhost' or an ip-address
+ */
+export function getCookieDomain(givenHostName: string): string {
+  for (let oneDomain of KNOWN_DOMAIN_NAMES) {
+    if (givenHostName.includes(oneDomain)) return "." + oneDomain;
+  }
+  return givenHostName;
+}
+
+/**
+ * @param givenDomain
+ * @result If `givenHostName` contains one of the known host names
+ *         it returns that known host name, which is the main domain (without any subdomain prefixes).
+ */
+export function getMainDomain(givenHostName: string): string {
+  for (let oneDomain of KNOWN_DOMAIN_NAMES) {
+    if (givenHostName.includes(oneDomain)) return oneDomain;
+  }
+  return givenHostName;
+}
+
+// ---------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------
 
 /**
  * Returns true if the two uris refer to the same host.

@@ -8,6 +8,8 @@ import {
   CustomInvalidResponse
 } from "./custom-errors";
 
+import { getCookieDomain } from "./utils";
+
 /**
  * - method: http verb, default 'GET'
  * - abortSignal: {@link AbortSignal}, default null
@@ -155,9 +157,7 @@ export default class DjangoComms {
       let cookieOptions = {
         sameSite: "None",
         secure: true,
-        domain: djangoDomain.includes("arbormeta.earth") // remove subdomain if there is one; TBC: we need to find a BETTER WAY
-          ? ".arbormeta.earth"
-          : djangoDomain
+        domain: getCookieDomain(djangoDomain)
       };
 
       let crsfToken = getCookie(DjangoComms.CSRF_COOKIE_NAME);
