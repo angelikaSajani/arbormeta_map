@@ -25,7 +25,7 @@ import plugins from "./plugins";
 
 import CatalogMemberFactory from "terriajs/lib/Models/Catalog/CatalogMemberFactory"; // AIS, added  < ======================== all those imports
 import ArbormetaReference from "./lib/terriajsOverrides/ArbormetaReference";
-import Cesium3DTilesCatalogItem_Arbm from "./lib/terriajsOverrides/Cesium3DTiles/Cesium3DTilesCatalogItem_Geo";
+import Cesium3DTilesCatalogItem_Geo from "./lib/terriajsOverrides/Cesium3DTiles/Cesium3DTilesCatalogItem_Geo";
 
 // Register all types of catalog members in the core TerriaJS.  If you only want to register a subset of them
 // (i.e. to reduce the size of your application if you don't actually use them all), feel free to copy a subset of
