@@ -132,7 +132,11 @@ export class ViewState_Arbm extends ViewState {
 
     // NOTE: no point testing for sessionid cookie, as under https
     // the cookie is 'http-only', hence javascript can't see it.
-    if (referrer && appUrl && compareUris(referrer, appUrl)) {
+    // if (referrer && appUrl && compareUris(referrer, appUrl)) {
+
+    // 2024-07-03 Rather than check refererr, we just check if there's an existing session cookie that hasn't been changed to
+    // 'logged-out' by removeCookies() and attempt to login with it.
+    if (getCookie(SESSION_COOKIE_NAME) && getCookie(SESSION_COOKIE_NAME) !== 'logged-out') {
       try {
         let loginData: LoginData = await LoginManager.sendLoginRequest(
           appUrl,
